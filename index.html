@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    <title>Map</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="scripts/map.js" ></script>
+    <script type="text/javascript" src="scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="scripts/analytics_lib.js" ></script>
+    <link href='styles/bootstrap.min.css' media='all' rel='stylesheet' type='text/css' />
+    <link href='styles/map.css' media='all' rel='stylesheet' type='text/css' />
+    <script type="text/javascript">
+	
+	jQuery(document).ready(function () {
+		
+		$(document).on("click", "a.link-pdf-facts", function() {
+				var $a = jQuery(this);
+				var href = $a.attr("href");
+				_trackClickEventWithGA("InfoWindow", "Get PDF LSC", href);
+				});
+			
+			$(document).on("click", "a.link-get-directions", function() {
+				var $a = jQuery(this);
+				var href = $a.attr("href");
+				_trackClickEventWithGA("InfoWindow", "Get Directions to this school LSC", href);
+				});	
+	 
+			initialize();
+					
+	});
+    </script>
+   </head>
+
+    <body>
+    <div id="page">
+    
+   <!-- <h2 id="headingtitle">Repurposing Schools Map</h2>-->
+      <div class="content-secondary">
+        <div id="search">
+          <div id='input-schoolname' style='margin-left:10px;'>
+            <select id="ddSchoolName" onChange="changeName(this);" class="input-xlarge pull-left" style="width:310px;">
+              <option value="">-- Select a School --</option>
+              <option value="">Loading Schools...</option>
+            </select>
+          </div>
+          <div class="pull-left">
+            <input class="btn btn-primary pull-left" style="display:none;" type="button" id="btnChangeName" value="Go" onClick="changeName(this);" />
+          </div>
+          <!--WAITING ANIMATION-->
+          <div id="waiting">Searching... <img src="images/ajax-loader.gif" width="16" height="16" alt=""></div>
+          <!-- RESET-->
+          <div id="resetbtn" style="float:right; width:80px;">
+            <input class="btn btn-danger pull-right" type="button" id="btnReset" value="Reset" onClick="resetmap();" />
+          </div>
+          <div class='clear'> </div>
+        </div>
+        <!--End Search--> 
+      </div>
+      <!--End content-secondary
+            
+      <!--Content-primary-->
+      <div class="content-primary"> 
+        <!--Map Panel-->
+        <div id="map_canvas"> </div>
+        <div> 
+           <a href="https://www.google.com/fusiontables/DataSource?docid=1L74zSOKyr3_LRBNjydBwQI1YRhJTOEE-8P18VY8" target="_blank" style="font-size: 13px;">Access the underlying data</a>
+          <!--VERSION-->
+          <!-- <div id="versionbox"> <a href="#version" role="button" class="version" data-toggle="modal">v1.00</a> </div> -->
+          <div id="versionbox" class="blue"> v1.00 </div>
+          <!--BOTTOM LINKS--> 
+          <div class='clear'> </div>
+          <!--DISCLAIMER-->
+          <hr />
+          <p class="footer"> <strong>Disclaimer:</strong> Every reasonable effort has been made to assure the accuracy
+            of the maps and data provided; nevertheless, some information may not be accurate. All data visualizations 
+            on maps should be considered approximate. </p>
+          <hr />
+          <br />
+        </div>
+        <div class='clear'> </div>
+      </div>
+      <!--end of content-primary--> 
+      
+      <!--What's New-->
+      <!-- <div id="version" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y:none;" >
+        <div class="modal-body">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+          <h3 style="color:#005288;">School Repurposing 2014 - What's New</h3>
+          <h4>v1.00</h4>
+          <p><strong>1/2014</strong> - The map launches with drop down list of schools. </p>
+        </div>
+      </div> -->
+      <!--End Whats New--> 
+    </div>
+    <!--End Page-->
+</body>
+</html>

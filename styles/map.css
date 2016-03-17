@@ -1,0 +1,283 @@
+#page {
+	margin: 0px;
+	padding: 0px;
+	width: 945px;
+	background-color:#fcfcfc;
+}
+.content-primary {
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+}
+.content-secondary {
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+}
+#map_canvas {
+	margin: 0px;
+	padding: 0px;
+	height: 800px;
+	width: 945px;
+}
+/* footer text */
+.footer {
+	color: #77787b;
+	font-size: 12px;
+}
+p.footer {
+	margin: 0.3em 0;
+	line-height: 13px;
+}
+/* overides for bootstrap */
+
+h1, h2 {
+	color: #5D95CA;
+}
+h3 {
+	color: #3B4A66;
+}
+/* fix for map directions display and terrain dd. */
+#adp-placemark td img {
+	max-width: none;
+}/* start marker */
+.adp-placemark td img {
+	max-width: none;
+}/* end marker */
+#map_canvas label {
+	width: auto;
+	display:inline;
+} /* end marker */
+/* remove the markers altogether */
+#adp-placemark td img {
+	display: none;
+}/* remove start marker */
+.adp-placemark td img {
+	display: none;
+}/* remove end marker */
+/* don't like the horsey dropdowns and btns */
+input, select {
+	margin: 0px 5px 0px 0px;
+	padding: 1px;
+	height:24px;
+}
+input[type="text"] {
+	margin: 0px 5px 0px 0px;
+	padding: 2px;
+	height:18px;
+}
+.btn {
+	padding: 1px 6px;
+}
+/*make infowindow direction inputs, dd, and btn smaller */
+#directionSearchPanel select {
+	margin:0px 5px 0px 0px;
+	padding:0px;
+	width:80px;
+	height:22px;
+	font-size:12px;
+} /* adjust dd */
+#input-addr input[type="text"] {
+	margin:0px 5px 0px 0px;
+	padding:1px;
+	width:164px;
+	font-size:12px;
+} /* adjust address text entry */
+#directionSearchPanel .btn {
+	padding:0px 8px;
+	height:22px;
+} /* adjust Go btn */
+/* top bar */
+#search {
+	font-size: 1em;
+	margin:0px;
+	background-color: #274976;
+	padding: 10px;
+	min-height:24px;
+}
+.btn-sidetabsoveride {
+	color: #ffffff;
+	background-color: #006dcc;
+	background-image: none;
+	border-color:#006dcc;
+}
+.btn-sidetabsoveride:hover, .btn-sidetabsoveride:focus, .btn-sidetabsoveride:active, .btn-sidetabsoveride.active {
+	color: #ffffff;
+	background-color: #0055cc;
+}
+#dpContainer {
+	width:230px;
+	position:relative;
+	z-index:2;
+	overflow: visible;
+	padding:0px;
+	margin:0px;
+}
+#dpMovingContainer {
+	position:relative;
+	left:945px;
+	margin-left:0px;
+}
+#dpButton {
+	z-index:2;
+	position:absolute;
+	top:20px;
+	left:-20px;
+}
+#dpPanel {
+	width:210px;
+	min-height:230px;
+	max-height:400px;
+	position:absolute;
+	z-index:2;
+	top:20px;
+	left:0px;
+	border-radius:0px;
+	border-bottom-left-radius:6px;
+	background-color:#d3ebfa;
+	border:solid 2px #006dcc;
+	border-color: #006dcc;
+	border-right-width:0px;
+	min-height:230px;
+	padding:10px 10px 10px 10px;
+	font-size:.85em;
+	line-height:14px;
+	overflow-x:hidden;
+	overflow-y:auto;
+}
+#wpContainer {
+	width:232px;
+	position:relative;
+	z-index:2;
+	overflow:visible;
+	padding:0px;
+	margin:0px;
+}
+#wpMovingContainer {
+	position:relative;
+	left:-232px;
+	margin-left:0px;
+}
+#wpButton {
+	z-index:2;
+	position:absolute;
+	top:20px;
+	left:230px;
+}
+#wpPanel {
+	font-size:.85em;
+	width:210px;
+	position:absolute;
+	z-index:2;
+	top:20px;
+	left:0px;
+	border-radius:0px;
+	border-bottom-right-radius:6px;
+	background-color:#d3ebfa;
+	border:solid 2px #006dcc;
+	border-color: #006dcc;
+	border-left-width:0px;
+	padding:10px 10px 10px 10px;
+	overflow-x:hidden;
+	overflow-y:auto;
+	min-height:150px;
+	max-height:450px;
+}
+.blue {
+	color: #274976;
+}.green {
+	color: #060;
+}
+.orange {
+	color: #F90;
+	color: #C90;
+	color: #dd8500;
+}
+.purple
+{
+    color: #606;
+}
+hr {
+	margin:5px 0px;
+}
+#waiting {
+	float:left;
+	text-align:center;
+	font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
+	width: 100px;
+	border-radius: 50px;
+	color: #3B4A66;
+	background-color: #ECF2FF;
+	padding: 1px;
+	font-size: 12px;
+	line-height: 20px;
+	min-height:20px;
+	display: none;
+	margin-left:10px;
+}
+#waiting img {
+	padding:0px;
+	margin:0px;
+}
+#versionbox {
+	float:right;
+	text-align:right;
+	margin-top: 3px;
+	font-size: 11px;
+}
+#version {
+	max-width: 350px;
+}
+a.version {
+	font-size: 11px;
+}
+.clear {
+	clear: both;
+	height:0px;
+}
+/* overrides legend */
+.popover-content {
+padding: 9px 5px;
+/*
+#label-yellow
+{
+    color: #cc9900;
+}
+#label-green
+{
+    color: #060;
+}
+#label-blue
+{
+    color: #36C;
+}
+#label-purple
+{
+    color: #cc66cc;
+}
+#label-red
+{
+    color: #d73e3e;
+}
+#label-grey
+{
+    color: #555;
+}
+#label-orange
+{
+    color: #F90;
+}
+#label-community
+{
+    color: #363;
+}
+#label-wards
+{
+    color: #623100;
+}
+#label-zipcode
+{
+    color: #351c75;
+}
+*/
