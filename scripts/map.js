@@ -5,11 +5,15 @@
 //  2/2014
 
 
+var searchPolyAttendance  = null;
 
+//var fusionTableId 		= "1L74zSOKyr3_LRBNjydBwQI1YRhJTOEE-8P18VY8" ; // CandidateMonitorReport-2-18-14
+var fusionTableId 		= "1gUg2Hlxyzs5cwWuDEcfe3Rs7qDmPdUmjtrwlDjnn" ; // CandidateMonitorReport2016
+var LSCdistrictsTableId 		= "1WRXaOoaBmKqjOOqYfd7ltc8pPHbKhMUtQ_gy6joW" ; // LSC Voting Districts SY16/17
 
-var fusionTableId 		= "1L74zSOKyr3_LRBNjydBwQI1YRhJTOEE-8P18VY8" ; // CandidateMonitorReport-2-18-14
-var googleAPIkey 		= "AIzaSyDBgH1Z_xKIjf1FVwvexUWfW-2FEhUjvF8";
-var googleAPIurl 		= "https://www.googleapis.com/fusiontables/v1/query";
+var googleAPIkey          = "AIzaSyDBgH1Z_xKIjf1FVwvexUWfW-2FEhUjvF8";
+var googleAPIurl          = "https://www.googleapis.com/fusiontables/v1/query";
+var APIurl                = "http://localhost/SchoolProfile/dataservice.asmx";
 var map;
 var markersArray		= []; 			//for the marker array
 var infoWindowsas		= null; 		// infowindow
@@ -100,15 +104,15 @@ function initialize() {
         panControl: false,
         zoomControl: true,
         scaleControl: false,
-		mapTypeControl: true,
-			mapTypeControlOptions: {
+		    mapTypeControl: true,
+			  mapTypeControlOptions: {
       			style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-				position: google.maps.ControlPosition.RIGHT_TOP
+				    position: google.maps.ControlPosition.RIGHT_BOTTOM
 				},
 		zoomControl: true,
  			zoomControlOptions: {
 				style: google.maps.ZoomControlStyle.SMALL,
-				position: google.maps.ControlPosition.RIGHT_BOTTOM
+				position: google.maps.ControlPosition.RIGHT_TOP
 				},
         //navigationControlOptions: {style: google.maps.NavigationControlStyle.LARGE },
         mapTypeId: google.maps.MapTypeId.ROADMAP //TERRAIN 
@@ -132,31 +136,31 @@ function createSchoolDropdown(d) {
 	if( d.rows != null ) {
 		var ulist 		= d.rows;
 		var ulistlength = d.rows.length;
-		var nameDropdown = "<select id='ddSchoolName' onchange='changeName(this);' class='input-xlarge pull-left' style='width:310px;'>"
+		var nameDropdown = "<select id='ddSchoolName' onchange='changeName(this);' class='input-xlarge pull-left' style='width:310px;'>" ;
 		nameDropdown += '<option value="">-- Select a School --<\/option>';
 		for (var i = 0; i < ulistlength; i++) { //start loop
 			var sid				= (ulist[i][0]);
 			var sname			= (ulist[i][3]);
 			var ParentStat		= (ulist[i][9]);
 			var CommunityStat 	= (ulist[i][12]);
-
-			if( ParentStat == "I" || CommunityStat == "I" ) {
-				var headcolor = "#B20000";
+      var headcolor = "";
+			if( ParentStat === "I" || CommunityStat === "I" ) {
+				 headcolor = "#B20000";
 			}else{
-				var headcolor = "#1E5F08";
+				 headcolor = "#1E5F08";
 			}	
 
-			nameDropdown += "<option value='"+sid+"' style='color:"+headcolor+";' >"+sname+"</option>"
+			nameDropdown += "<option value='"+sid+"' style='color:"+headcolor+";' >"+sname+"</option>" ;
 			//nameDropdown += "<option value='"+sid+"'>"+sname+"</option>"
 		}
-		nameDropdown += "</select>"
+		nameDropdown += "</select>" ;
 		$('#input-schoolname').html(nameDropdown);
 
 	}else{//nothing returned
 		alert("List of schools could not be retrieved. Please refresh your browser.");
 		return;
 	}
-	mapAllSchools(d) 
+	mapAllSchools(d) ; 
 }
 
 
@@ -165,17 +169,17 @@ function createSchoolDropdown(d) {
 //called from school dd
 function changeName(sel) {
 	clearSearch();
-	$('#waiting').fadeIn();
+	//$('#waiting').fadeIn();
 	//	var nSchool = sel.options[sel.selectedIndex].value; 
 	var nSchool = $("#ddSchoolName").val();
 	selectedSchoolID = nSchool;
- var ddsn = $("#ddSchoolName option:selected").text();
+  var ddsn = $("#ddSchoolName option:selected").text();
 	_trackClickEventWithGA("Search", "School Name DropDown LSC", ddsn); 
-	if (nSchool != "") {	
+	if (nSchool !== "") {	
 	 querySchools(nSchool);
 	}else{//name is not selected from dd - reset
 		alert("Please select a school from the drop down.");
-		$('#waiting').hide();
+		//$('#waiting').hide();
 	}
 }
 
@@ -206,12 +210,13 @@ function querySchools(nSchool) { // called only from dropdown
 }
 
 
-
 //SchoolId, Lat, Lng, SchoolName, Address, Phone, SchoolType, PARENT_MAX, PARENT_CAND, PARENT_STAT, COMMUNITY_MAX, COMMUNITY_CAND, COMMUNITY_STAT
 function mapAllSchools(d) {//one school or all schools
-	if( d.rows != null ) {
-		var ulist 		= d.rows;
-		var ulistlength = d.rows.length;
+    var ulist =  "" ;
+		var ulistlength= "" ;
+	if( d.rows !== null ) {
+		 ulist 		= d.rows;
+		 ulistlength = d.rows.length;
 		for (var i = 0; i < ulistlength; i++) {//start loop for infowindow
 			infoWindowsas	= new google.maps.InfoWindow();
 			var lat			= (ulist[i][1]);
@@ -219,10 +224,11 @@ function mapAllSchools(d) {//one school or all schools
 			var position	= new google.maps.LatLng(lat,lng);
 			var pstat 		= ulist[i][9];
 			var cstat 		= ulist[i][12];
-			if(pstat == "I" || cstat == "I" || pstat == "" || cstat == "" ){ 
-				 var image  = 'images/red_ex.png' ; 
+      var image = "";
+			if(pstat === "I" || cstat === "I" || pstat === "" || cstat === "" ){ 
+				  image  = 'images/red_ex.png' ; 
 				}else{
-				 var image  = 'images/green_star.png' ;
+				  image  = 'images/green_star.png' ;
 				}
 			var marker 		= new google.maps.Marker({
 				position	 		: position,
@@ -253,26 +259,46 @@ function mapAllSchools(d) {//one school or all schools
 	 searchtype = "oneschool";
 	}
 	setMapZoom();	
-	$('#waiting').hide();
+	//$('#waiting').hide();
 } // end mapAllSchools
 
 
+function displayLSCBoundary(id) {
+  //show the LSC boundaries of the schools
+  if (searchPolyAttendance != null) {
+    searchPolyAttendance.setMap(null);
+  }
+  searchPolyAttendance = null;
 
+  var wh="'ID' = '" + id + "'" ; 
+  searchPolyAttendance = new google.maps.FusionTablesLayer({
+    query: {
+          from:   LSCdistrictsTableId,
+          select: "geometry",
+          where:  wh
+          },
+    styles: [                       
+          { polygonOptions: { fillColor: "#0b5394", fillOpacity: .10, strokeColor: "#0149da", strokeWeight: 3 } },
+          ],  
+          suppressInfoWindows: true 
+      });
+  searchPolyAttendance.setMap(map);
+  }
 
 
 
 function setMapZoom() {
-	if (searchtype == "allschools") {
+	if (searchtype === "allschools") {
 		map.setZoom(11);
 		map.setCenter(chicago);
 	} else {//one school
 		map.fitBounds(latlngbounds);			//fits all the markers on the map
-		//map.setZoom(map.getZoom()-1);	//zoom one click out
+		map.setZoom(14);//map.setZoom(map.getZoom()-1);	//zoom one click out
 	}
-	if(map.getZoom()>17){
+	/*if(map.getZoom()>17){
 		map.setZoom(17);
-	}
-	if (searchtype == "allschools" ) {
+	}*/
+	if (searchtype === "allschools" ) {
 		// don't pop any windows if clicking on legend
 	}else{
 		query4infowindowData(selectedSchoolID);
@@ -287,7 +313,7 @@ function markerClick(map, m, ifw) {
 		var ht = m.sname + " " + m.address;
 		_trackClickEventWithGA("Click", "Marker on Map LSC", ht);
 		ifw.close(map);
-			 query4infowindowData(m.sid);
+		query4infowindowData(m.sid);
 	};
 	
 }
@@ -324,11 +350,11 @@ function openInfoWindow(j) {
 		var lat 				= j.rows[0][1];
 		var lng 				= j.rows[0][2];
 		var position 			= new google.maps.LatLng(lat,lng);
-	
+	var headcolor ="";
 	if( ParentStat == "I" || CommunityStat == "I" ) {
-		var headcolor = "#B20000";
+		 headcolor = "#B20000";
 	}else{
-		var headcolor = "#1E5F08";
+		 headcolor = "#1E5F08";
 	}	
 	
 	
@@ -351,11 +377,11 @@ function openInfoWindow(j) {
 			var communityNeed = (CommunityMax-CommunityCandidate);
 		    contents +=	"<div style='max-width:350px; color:#B20000; '>Community Candidates Needed: <strong>" + communityNeed + "</strong></div>"
 		    }else{
-			contents +=	"<div style='max-width:350px; color:#1E5F08; '>Community Candidates Total: <strong>" + CommunityCandidate + "</strong></div>"
+			contents +=	"<div style='max-width:350px; color:#1E5F08; '>Community Candidates Total: <strong>" + CommunityCandidate + "</strong></div>";
 		}
 
 		//if (ParentStat == "I" || CommunityStat == "I" ) {
-			contents +=	"<div style='max-width:350px; font-size:90%; padding-top:4px;'>Data from 3/23/2014</div>"
+			contents +=	"<div style='max-width:350px; font-size:90%; padding-top:4px;'>Data from 3/23/2014</div>";
 			//};
 
 		contents +=	"</div>" ;
@@ -366,15 +392,15 @@ function openInfoWindow(j) {
 		//" target='_blank' >View more details (PDF)</a><br />"}
 	
 	dirAddress = address.replace(" ", "+");
-	contents +=	"<a class='link-get-directions'  style='padding:0px; margin:0px; color:" + headcolor + "' href='http://maps.google.com/maps?daddr=" +
-				dirAddress + "' target='_blank' >Get directions to this school</a><br /><br />"	
-	contents +=	"</div></div>"
+	contents +=	"<a class='link-get-directions'  style='padding:0px; margin:0px; color:" + headcolor + "' href='http://maps.google.com/maps?daddr=" + 
+				dirAddress + "' target='_blank' >Get directions to this school</a><br /><br />"	;
+	contents +=	"</div></div>";
 	 
 
-	if (searchtype == "legendschools") {
-		if(map.getZoom() < 13) {
-			map.setZoom(13);
-		}
+	//if (searchtype == "legendschools") {
+  //		if(map.getZoom() < 13) {
+  //			map.setZoom(13);
+  //		}
 		//welcomingchanges
 		//if( mapview !== "options" ) {
 	 // var wlat = lat;
@@ -382,14 +408,16 @@ function openInfoWindow(j) {
 		//	var wpos = new google.maps.LatLng(wlat,wlng);
 		//	map.setCenter(wpos);
 		//}
-	}
-	 infoWindowsas.setOptions({ 
+	//}
+  
+  displayLSCBoundary(sid);
+	infoWindowsas.setOptions({ 
     	pixelOffset: new google.maps.Size(-1, -22)
      }); 
 	infoWindowsas.setContent(contents);
 	infoWindowsas.setPosition(position);
 	infoWindowsas.open(map);
-	$('#waiting').hide();
+	//$('#waiting').hide();
 	}//end not null
 	
 }
@@ -405,12 +433,16 @@ function openInfoWindow(j) {
 
 
 function clearSearch() {
+  if (searchPolyAttendance != null) {
+    searchPolyAttendance.setMap(null);
+    }
 	if (infoWindowsas) {
-		infoWindowsas.close(map);}
+		infoWindowsas.close(map);
+    }
 	deleteMarkers();
 	latlngbounds = new google.maps.LatLngBounds(null);
 	searchtype = null;
-	
+	searchPolyAttendance = null;
 }
 
 
@@ -460,6 +492,160 @@ function deleteMarkers() {
 
 
 
+// an address search displays the 
+function addressSearch(theAddress) {
+  var address = theAddress;
+  if (address != "" ) {
+    if (address.toLowerCase().indexOf("chicago, illinois") == -1) {
+      address = address + " chicago, illinois";
+    }
+    geocoder.geocode({ 'address': address }, function (results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        geoaddress = (results[0].formatted_address);
+        map.setCenter(results[0].geometry.location);
+        radiusLoc = results[0].geometry.location;
+        map.setZoom(14);
+        if (addrMarker) { addrMarker.setMap(null); }
+        addrMarker = new google.maps.Marker({
+          position: results[0].geometry.location,
+          map: map,
+          icon: addrMarkerImage,
+          animation: google.maps.Animation.DROP,
+          title: geoaddress
+        });
+        //_trackClickEventWithGA("Search", "Address", geoaddress);
+        //_trackClickEventWithGA("Search", "Address", theAddress);
+        map.panTo(addrMarker.position);
+        positionMarkersOnMap();
+        whereClause = " WHERE "
+        whereClause += "Boundary = 'Attendance Area School' ";
+        //whereClause += " AND Boundary not equal to 'Citywide' ";
+        whereClause += " AND ST_INTERSECTS('Polygon', CIRCLE(LATLNG"+results[0].geometry.location.toString() + "," + .00001 + "))";
+        whereClause += " ORDER BY 'School'";
+        var query = "SELECT ID, School, Address, City, Phone, Type, Classification, BoundaryGrades, Grades, Boundary, Uniqueid,"+
+                          " Zip, Marker, Typenum, ProgramType, Lat, Long, Rating, "+
+                          " Count, Growth, Attainment, Culture, Graduation, Mobility, Dress, Reading, Math, ACT, ADA, College "+
+                          " FROM " + fusionTableId + whereClause;
+         //console.log(query);
+        //encodeQuery(query, resultListHomeSchool);
+        encodeQuery(query, resultListBuilder);
+
+      } else {//geocoder status not ok
+        alert("We could not find your address: " + status);
+      }
+    });
+  } else {//didn't enter an address
+    alert("Please enter an address.");
+  }
+  //  if( $( window ).width() > 480 ) {
+  //   map.panTo(addrMarker.position);
+  //   map.panBy(-calcPinLocation(), 0);
+  // }
+}
+
+
+
+
+// radius search displays schools within a radius
+// filtering takes place
+function radiusSearch() {
+
+  deleteOverlays();
+
+  searchtype = "radius";
+  var address = geoaddress;
+ 
+  if (address != "") {
+    
+    //console.log(addrMarker.position)
+    //console.log(radiusLoc);
+    $("#btnSearchRadius").hide();
+    $("#btnShowFilters").show();    
+    // remove the address search results in order to not have 
+    // 2 of the same compare button ids
+    $("#resultListPoly").html(""); 
+    
+    getSearchRadius();
+    drawSearchRadiusCircle(radiusLoc);
+    map.panTo(radiusLoc);
+    positionMarkersOnMap();
+    var whereClause = filterSchools();
+    //whereClause += " AND ST_INTERSECTS('Lat', CIRCLE(LATLNG" +  addrMarker.position.toString() + "," + searchRadius + "))";
+    whereClause += " AND ST_INTERSECTS('Lat', CIRCLE(LATLNG" +  radiusLoc.toString() + "," + searchRadius + "))";
+    whereClause += " ORDER BY 'School'";
+    var query = "SELECT ID, School, Address, City, Phone, Type, Classification, BoundaryGrades, Grades, Boundary, Uniqueid,"+
+                          " Zip, Marker, Typenum, ProgramType, Lat, Long, Rating, "+
+                          " Count, Growth, Attainment, Culture, Graduation, Mobility, Dress, Reading, Math, ACT, ADA, College "+
+                          " FROM " + fusionTableId + " WHERE Lat not equal to '' " + whereClause ;
+    encodeQuery(query, resultListBuilder);
+
+  } else {//fail
+    alert("Search failed. Please reset the map and try again.");
+    
+  }
+}
+
+
+
+
+
+function getSearchRadius() {
+  searchRadius = $("#ddlRadius").val();
+
+  if (typeof searchRadius === "undefined") {
+    searchRadius = "1609";
+  }
+
+  switch (searchRadius) {
+    case "402":
+        map.setZoom(15);
+        break;
+    case "804":
+    case "1609":
+        map.setZoom(14);
+        break;
+    case "2414":
+    case "3218":
+        map.setZoom(13);
+        break;
+    case "4023":
+    case "4828":
+    case "6437":
+        map.setZoom(12);
+        break;
+    case "8046":
+    case "9656":
+        map.setZoom(11);
+        break;
+    case "16090":
+        map.setZoom(10);
+        break;
+    default: 
+        map.setZoom(11);
+    }
+  
+}
+
+
+function drawSearchRadiusCircle(point) {
+  if (searchRadiusCircle != null) {
+    searchRadiusCircle.setMap(null);
+  }
+  var circleOptions = {
+    strokeColor: "#4b58a6",
+    strokeOpacity: 0.3,
+    strokeWeight: 1,
+    fillColor: "#4b58a6",
+    fillOpacity: 0.05,
+    map: map,
+    center: point,
+    clickable: false,
+    zIndex: -1,
+    radius: parseInt(searchRadius)
+  };
+  searchRadiusCircle = new google.maps.Circle(circleOptions);
+}
+
 
 
 
@@ -484,7 +670,7 @@ function resetmap() {
 
 function ajaxerror() {
 	alert("Your school(s) cannot be found. Please click Reset Map and try again.");
-	$('#waiting').hide();	
+	//$('#waiting').hide();	
 }	
 
 
@@ -525,50 +711,88 @@ function encodeQuery(q,sf) {
 
 
 
-// toggles welcoming panel when Results tab clicked //// NOT USED
-/*function toggleWpMovingContainerXXX() {
-	//console.log("toggling");
-    var $marginLefty = $('#wpMovingContainer');
-	$marginLefty.animate({
-      marginLeft: parseInt($marginLefty.css('marginLeft'),10) == 0 ? $marginLefty.outerWidth() : 0
-    });
-}*/
- 
-function closeWpMovingContainer() {// closes welcoming panel
-    var $marginLefty = $('#wpMovingContainer');
-	$marginLefty.animate({
-      marginLeft: 0
-	  }, 10, function() {
-		  //animation complete
-    });
-	$('#resultstypearrow').html('R<br />e<br />s<br />u<br />l<br />t<br />s<br /><span style="color:#FAC158;">&#9658</span><br />');
+
+// not used 
+// uses web service to encode
+function encodeQueryPhil(q,sf) {
+  var encodedQuery = encodeURIComponent(q);
+  var url = [APIurl];
+  url.push('/' + encodedQuery); 
+  url.push('?callback=?');
+  //console.log(url.join(''));
+  $.ajax({
+    url: url.join(''),
+    dataType: "jsonp",
+    success: sf,
+    error: function () {alert("AJAX ERROR for " + q ); }
+  });
 }
 
-function toggleWpMovingContainer() {// toggles welcoming panel
-    var $marginLefty = $('#wpMovingContainer');
-	if(parseInt($marginLefty.css('marginLeft')) == 0) {
-		$marginLefty.animate({marginLeft: $marginLefty.outerWidth() }, 200);
-		$('#resultstypearrow').html('R<br />e<br />s<br />u<br />l<br />t<br />s<br /><span style="color:#FAC158;">&#9668</span><br />');
-	  }else{
-		$marginLefty.animate({marginLeft: 0 },200);
-		$('#resultstypearrow').html('R<br />e<br />s<br />u<br />l<br />t<br />s<br /><span style="color:#FAC158;">&#9658</span><br />');
-	}
+// not used
+function createAutocompleteArrayPhil(d) {
+  
+  if( d != null ) {
+
+  // console.log(d[1].SchoolName);
+  // console.log(d[1].Zip);
+  // console.log(d.length);
+  
+    var ulist     = d;
+    var ulistlength = d.length;
+    
+    for (var i = 0; i< ulistlength; i++) { 
+      
+      var sname   = (d[i].SchoolName);
+      var szipp   = (d[i].Zip);
+      //var sname   = (ulist[i][0]);
+      //var szipp   = (ulist[i][1]);
+      //var sclas   = (ulist[i][2]);
+      //var sprog   = replacePipes(ulist[i][3]);
+
+      arrayforautocomplete.push(sname);
+      arrayforautocomplete.push(szipp);
+      //arrayforautocomplete.push(sclas);
+      //arrayforautocomplete.push(sprog);
+    }
+    
+
+  }else{//nothing returned
+    alert("The list of schools for autocomplete could not be loaded.");
+  }
+
+  sort_and_unique(arrayforautocomplete);
+  //initAutocomplete();
+  //searchfromurl(); 
 }
 
+ function encodeQueryPhil(q,sf) {
+   var encodedQuery = encodeURIComponent(q);
+   var url = [APIurl];
+   url.push('/' + encodedQuery);
+  
+   url.push('?callback=?');
 
+   console.log(url.join(''));
+   $.ajax({
+     url: url.join(''),
+     dataType: "jsonp",
+     success: sf,
+     error: function () {alert("AJAX ERROR for " + q ); }
+   });
+  }
 
-//not used
-function toggleOptionSchools() {
-	if (optionson == false) {
-		$('#btnOption').val("Hide Nearby Schools");
-		optionson = true;
-		$('#ddlRadius').show();
-	}else{
-		optionson = false;
-		$('#btnOption').val("Show Nearby Schools");
-		$('#ddlRadius').hide();
-	}
-	$('#btnChangeName').click();
-}
+  // Data Service
 
+  // http://localhost/SchoolProfile/dataservice.asmx/GetAllSchools?callback=ted
+
+  // http://localhost/SchoolProfile/dataservice.asmx/GetSchoolsForSchoolIds?callback=ted&schoolIds=609832;609893
+
+  // http://localhost/SchoolProfile/dataservice.asmx/GetDistinctSchoolNames?callback=ted
+
+  // schoolinfo.cps.edu/schoolprofile/
+
+  // $(document).ready(function(){
+  //  jQuery.getJSON("http://ical.cps.edu/KeyEvents?callback=?",
+  //  function(data))
+  // });
 

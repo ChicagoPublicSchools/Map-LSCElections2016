@@ -1,17 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
 
     <title>Map</title>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,  user-scalable=no">
+    <meta http-equiv="cache-control" content="max-age=0">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 11:00:00 GMT">
+    <meta http-equiv="pragma" content="no-cache">
+    
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js"></script>
     <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-    <script type="text/javascript" src="scripts/map.js" ></script>
+    <script type="text/javascript" src="scripts/map.js?v=2.7" ></script>
     <script type="text/javascript" src="scripts/bootstrap.min.js"></script>
     <script type="text/javascript" src="scripts/analytics_lib.js" ></script>
-    <link href='styles/bootstrap.min.css' media='all' rel='stylesheet' type='text/css' />
-    <link href='styles/map.css' media='all' rel='stylesheet' type='text/css' />
+    <link href="styles/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="styles/map.css?v=2.0" media="all" rel="stylesheet" type="text/css" />
+    
     <script type="text/javascript">
 	
 	jQuery(document).ready(function () {
@@ -40,7 +49,7 @@
    <!-- <h2 id="headingtitle">Repurposing Schools Map</h2>-->
       <div class="content-secondary">
         <div id="search">
-          <div id='input-schoolname' style='margin-left:10px;'>
+          <div id="input-schoolname" style="margin-left:10px;">
             <select id="ddSchoolName" onChange="changeName(this);" class="input-xlarge pull-left" style="width:310px;">
               <option value="">-- Select a School --</option>
               <option value="">Loading Schools...</option>
@@ -49,8 +58,8 @@
           <div class="pull-left">
             <input class="btn btn-primary pull-left" style="display:none;" type="button" id="btnChangeName" value="Go" onClick="changeName(this);" />
           </div>
-          <!--WAITING ANIMATION-->
-          <div id="waiting">Searching... <img src="images/ajax-loader.gif" width="16" height="16" alt=""></div>
+          <!--WAITING ANIMATION
+          <div id="waiting">Searching... <img src="images/ajax-loader.gif" width="16" height="16" alt=""></div>-->
           <!-- RESET-->
           <div id="resetbtn" style="float:right; width:80px;">
             <input class="btn btn-danger pull-right" type="button" id="btnReset" value="Reset" onClick="resetmap();" />
@@ -66,7 +75,7 @@
         <!--Map Panel-->
         <div id="map_canvas"> </div>
         <div> 
-           <a href="https://www.google.com/fusiontables/DataSource?docid=1L74zSOKyr3_LRBNjydBwQI1YRhJTOEE-8P18VY8" target="_blank" style="font-size: 13px;">Access the underlying data</a>
+           <a href="https://www.google.com/fusiontables/DataSource?docid=1gUg2Hlxyzs5cwWuDEcfe3Rs7qDmPdUmjtrwlDjnn" target="_blank" style="font-size: 13px;">Access the underlying data</a>
           <!--VERSION-->
           <!-- <div id="versionbox"> <a href="#version" role="button" class="version" data-toggle="modal">v1.00</a> </div> -->
           <div id="versionbox" class="blue"> v1.00 </div>
