@@ -1,0 +1,52 @@
+
+/*LSC PROD*/
+SELECT
+ SchoolId
+ ,Latitude
+ ,Longitude
+,SchoolName
+,schoolAddress
+,schoolPhone
+,schoolZip
+,schoolAddress + ' ' + 'Chicago, IL ' + schoolZip  as SchoolFullAddress
+,DBO.SchoolTypeAbbr(SchoolType) SchoolType
+,SUM(PARENT_MAX) PARENT_MAX
+,SUM(PARENT_CAND) PARENT_CAND
+,(CASE WHEN SUM(PARENT_MAX) = 0 THEN '' WHEN SUM(PARENT_MAX) < SUM(PARENT_CAND) THEN 'C' WHEN SUM(PARENT_MAX) = SUM(PARENT_CAND) THEN 'S' ELSE 'I' END) PARENT_STAT
+,SUM(COMMUNITY_MAX) COMMUNITY_MAX
+,SUM(COMMUNITY_CAND) COMMUNITY_CAND
+,(CASE WHEN SUM(COMMUNITY_MAX) = 0 THEN '' WHEN SUM(COMMUNITY_MAX) < SUM(COMMUNITY_CAND) THEN 'C' WHEN SUM(COMMUNITY_MAX) = SUM(COMMUNITY_CAND) THEN 'S' ELSE 'I' END) COMMUNITY_STAT
+ FROM 
+(SELECT S.SchoolId,ISNULL(S.OracleID,0) OracleID,S.[Year],S.SchoolName,S.SchoolNetworkName,S.SchoolType,S.SchoolAddress,S.SchoolPhone,S.SchoolZip,S.Latitude,S.Longitude
+,ISNULL(JA.ApplCt,0) JudgeApplCt
+,ISNULL(CA.TypeCt,0) CandidateCt
+,CASE WHEN MemberType <> 'PRINCIPAL'
+ THEN CASE WHEN ISNULL(MX.[Count],0) < ISNULL(CA.TypeCt,0) THEN ISNULL(MX.[Count],0) ELSE ISNULL(CA.TypeCt,0) END
+ ELSE 0 END QuorumCt
+,CASE WHEN MemberType = 'PARENT' THEN ISNULL(MX.[Count],0) ELSE 0 END PARENT_MAX
+,CASE WHEN MemberType = 'PARENT' THEN ISNULL(CA.TypeCt,0) ELSE 0 END PARENT_CAND
+,CASE WHEN MemberType = 'COMMUNITY' THEN ISNULL(MX.[Count],0) ELSE 0 END COMMUNITY_MAX
+,CASE WHEN MemberType = 'COMMUNITY' THEN ISNULL(CA.TypeCt,0) ELSE 0 END COMMUNITY_CAND
+ FROM DBO.School S
+ LEFT OUTER JOIN DBO.Matrix MX ON S.SchoolId = MX.SchoolId AND S.Year = MX.Year
+ LEFT OUTER JOIN 
+(SELECT SchoolId,LSCMemberType,COUNT(*) TypeCt
+ FROM DBO.CandidateMember
+ WHERE Year = DBO.UpcomingElectionYear()
+ AND IsCandidate = 'Y'
+ AND Status = 'ACTIVE'
+ GROUP BY SchoolId,LSCMemberType
+) CA ON MX.SchoolId = CA.SchoolId AND MX.MemberType = CA.LSCMemberType
+ LEFT OUTER JOIN 
+(SELECT SchoolIdAppliedTo,COUNT(*) ApplCt
+ FROM DBO.Judge
+ WHERE Year = DBO.UpcomingElectionYear()
+ AND Status = 'ACTIVE'
+ GROUP BY SchoolIdAppliedTo
+) JA ON S.SchoolId = JA.SchoolIdAppliedTo
+ WHERE S.Year = DBO.UpcomingElectionYear()
+ AND S.HasLSC = 'y'
+ --{0} //For extra filtering which needs to go here and not the end as usual.
+) QRY
+ GROUP BY SchoolId,OracleID,Year,SchoolName,SchoolNetworkName,SchoolType,JudgeApplCt,SchoolAddress,SchoolZip,SchoolPhone,Latitude,Longitude
+ --{1} //For HAVING clause
