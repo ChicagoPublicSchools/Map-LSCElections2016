@@ -2,13 +2,11 @@
 /*LSC PROD*/
 SELECT
  SchoolId
- ,Latitude
- ,Longitude
+ ,Latitude as Lat
+ ,Longitude as Lng
 ,SchoolName
-,schoolAddress
-,schoolPhone
-,schoolZip
-,schoolAddress + ' ' + 'Chicago, IL ' + schoolZip  as SchoolFullAddress
+,schoolAddress + ' ' + 'Chicago, IL ' + schoolZip  as Address
+,schoolPhone as Phone
 ,DBO.SchoolTypeAbbr(SchoolType) SchoolType
 ,SUM(PARENT_MAX) PARENT_MAX
 ,SUM(PARENT_CAND) PARENT_CAND
