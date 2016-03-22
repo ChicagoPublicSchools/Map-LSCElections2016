@@ -8,12 +8,15 @@
 
 
 //var fusionTableId 				= "1L74zSOKyr3_LRBNjydBwQI1YRhJTOEE-8P18VY8" ; // CandidateMonitorReport-2-18-14
-var fusionTableId 					= "1gUg2Hlxyzs5cwWuDEcfe3Rs7qDmPdUmjtrwlDjnn" ; // CandidateMonitorReport2016
+//var fusionTableId 					= "1gUg2Hlxyzs5cwWuDEcfe3Rs7qDmPdUmjtrwlDjnn" ; // CandidateMonitorReport2016
+var fusionTableId 					= "142zjKh-oFZIGF8GKTcUrivcwS4U4OzhfJUN7QAxQ" ; // LSCvacancies_2016 as of 3/22/2016
 var LSCdistrictsTableId 		= "1WRXaOoaBmKqjOOqYfd7ltc8pPHbKhMUtQ_gy6joW" ; // LSC Voting Districts SY16/17
 
-var googleAPIkey          	= "AIzaSyDBgH1Z_xKIjf1FVwvexUWfW-2FEhUjvF8";
-var googleAPIurl          	= "https://www.googleapis.com/fusiontables/v1/query";
-var APIurl                	= "http://localhost/SchoolProfile/dataservice.asmx";
+
+
+var googleAPIkey          = "AIzaSyDBgH1Z_xKIjf1FVwvexUWfW-2FEhUjvF8";
+var googleAPIurl          = "https://www.googleapis.com/fusiontables/v1/query";
+var APIurl                = "http://localhost/SchoolProfile/dataservice.asmx";
 var map;
 var geocoder;
 var addrMarker;
@@ -25,12 +28,11 @@ var infoWindowsas						= null; 		// infowindow
 var latlngbounds        		= null; 		// for panning and zooming to include all searched markers
 var selectedSchoolID				= null; 		// passing of info for poping selected school infowindow
 var searchtype							= null; 		// allschools, oneschool, address
-var chicago									= new google.maps.LatLng(41.839, -87.67); // default center of map
+var vacancyDate 						= "3/22/2016";
+var chicago;
 
 
-
-
-function initialize() {
+function initializeMap() {
 
 	clearSearch();
 
@@ -98,7 +100,8 @@ function initialize() {
 	    ]
 	  }
 ]
-geocoder                    = new google.maps.Geocoder();
+		geocoder                = new google.maps.Geocoder();
+		chicago									= new google.maps.LatLng(41.839, -87.67); // default center of map
     var myOptions = {
 			styles: grayStyles,
 	        zoom: 10,
@@ -129,8 +132,6 @@ geocoder                    = new google.maps.Geocoder();
 }
 
 
-
-// SchoolId	Lat	Lng	FinanceId	SchoolName	SchoolNetworkName	SchoolType	PARENT_MAX	PARENT_CAND	PARENT_STAT	COMMUNITY_MAX	COMMUNITY_CAND	COMMUNITY_STAT	TEACHER_MAX	TEACHER_CAND	TEACHER_STAT	STUDENT_MAX	STUDENT_CAND	STUDENT_STAT	NONTCHSTAFF_MAX	NONTCHSTAFF_CAND	NONTCHSTAFF_STAT	ADVOCATE_MAX	ADVOCATE_CAND	ADVOCATE_STAT	JROTC_INSTR_MAX	JROTC_INSTR_CAND	JROTC_INSTR_STAT	BUSINESS_MAX	BUSINESS_CAND	BUSINESS_STAT	COMMANDANT_MAX	COMMANDANT_CAND	COMMANDANT_STAT	CADET_CMDR_MAX	CADET_CMDR_CAND	CADET_CMDR_STAT	ED_EXPERT_MAX	ED_EXPERT_CAND	ED_EXPERT_STAT	JudgeApplCt	CandidateCt	QuorumCt	SortNetwork
 
 
 function queryForSchoolsDD(){
@@ -389,7 +390,7 @@ function openInfoWindow(j) {
 		}
 
 		//if (ParentStat == "I" || CommunityStat == "I" ) {
-			contents +=	"<div style='max-width:350px; font-size:90%; padding-top:4px;'>Data from 3/23/2014</div>";
+			contents +=	"<div style='max-width:350px; font-size:90%; padding-top:4px;'>"+ vacancyDate+"</div>";
 			//};
 
 		contents +=	"</div>" ;
