@@ -1,8 +1,8 @@
-//  LSC Candidate Map (LSC schools vacancies)
+//  LSC Vacancies Map (Community and Parent vacancies)
 //
 //	web services
 
-//  3/2016
+//  4/2016
 
 
 
@@ -99,7 +99,7 @@ function initializeMap() {
 	      { "saturation": -70 }
 	    ]
 	  }
-]
+	]
 		geocoder                = new google.maps.Geocoder();
 		chicago									= new google.maps.LatLng(41.839, -87.67); // default center of map
     var myOptions = {
@@ -219,6 +219,7 @@ function querySchools(nSchool) { // called only from dropdown
 
 //SchoolId, Lat, Lng, SchoolName, Address, Phone, SchoolType, PARENT_MAX, PARENT_CAND, PARENT_STAT, COMMUNITY_MAX, COMMUNITY_CAND, COMMUNITY_STAT
 function mapAllSchools(d) {//one school or all schools
+	console.log(d.rows[0][0]);
 		var ulist =  "" ;
 		var ulistlength= "" ;
 	if( d.rows !== null ) {
@@ -506,6 +507,7 @@ function addressSearch() {
       address = address + " chicago, illinois";
     }
     geocoder.geocode({ 'address': address }, function (results, status) {
+
       if (status == google.maps.GeocoderStatus.OK) {
         geoaddress = (results[0].formatted_address);
         map.setCenter(results[0].geometry.location);
@@ -528,9 +530,8 @@ function addressSearch() {
         //whereClause += " AND Boundary not equal to 'Citywide' ";
         whereClause += " WHERE ST_INTERSECTS('geometry', CIRCLE(LATLNG"+results[0].geometry.location.toString() + "," + .00001 + "))";
         //whereClause += " ORDER BY 'School Name'";
-        var query = "SELECT ID "+
-                          " FROM " + LSCdistrictsTableId + whereClause;
-debugger;
+        var query = "SELECT ID FROM " + LSCdistrictsTableId + whereClause;
+
         encodeQuery(query, mapAllSchools);
 
       } else {//geocoder status not ok
@@ -561,7 +562,7 @@ function resetmap() {
 		top.location.href = x;
 
 	} else {
-	initialize();
+	initializeMap();
 	}
 }
 
