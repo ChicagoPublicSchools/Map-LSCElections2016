@@ -1,5 +1,5 @@
 //  LSC Vacancies Map (Community and Parent vacancies)
-//
+
 //	web services
 
 //  4/2016
@@ -112,7 +112,7 @@ function initializeMap() {
 	        panControl: false,
 	        zoomControl: true,
 	        scaleControl: false,
-			    mapTypeControl: true,
+			    mapTypeControl: false,
 				  mapTypeControlOptions: {
 	      			style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
 					    position: google.maps.ControlPosition.RIGHT_BOTTOM
@@ -120,7 +120,7 @@ function initializeMap() {
 			zoomControl: true,
 	 			zoomControlOptions: {
 					style: google.maps.ZoomControlStyle.SMALL,
-					position: google.maps.ControlPosition.RIGHT_TOP
+					position: google.maps.ControlPosition.RIGHT_BOTTOM
 					},
 	        //navigationControlOptions: {style: google.maps.NavigationControlStyle.LARGE },
 	        mapTypeId: google.maps.MapTypeId.ROADMAP //TERRAIN
@@ -144,7 +144,7 @@ function createSchoolDropdown(d) {
 		var ulist 		= d.rows;
 		var ulistlength = d.rows.length;
 		var nameDropdown = "<select id='ddSchoolName' onchange='changeName(this);' class='form-control pull-left' >" ;
-		nameDropdown += '<option value="">-- Select a School --<\/option>';
+		nameDropdown += '<option value="">Select a School<\/option>';
 		for (var i = 0; i < ulistlength; i++) { //start loop
 			var sid				= (ulist[i][0]);
 			var sname			= (ulist[i][3]);
@@ -219,7 +219,7 @@ function querySchools(nSchool) { // called only from dropdown
 
 //SchoolId, Lat, Lng, SchoolName, Address, Phone, SchoolType, PARENT_MAX, PARENT_CAND, PARENT_STAT, COMMUNITY_MAX, COMMUNITY_CAND, COMMUNITY_STAT
 function mapAllSchools(d) {//one school or all schools
-	console.log(d.rows[0][0]);
+
 		var ulist =  "" ;
 		var ulistlength= "" ;
 	if( d.rows !== null ) {
