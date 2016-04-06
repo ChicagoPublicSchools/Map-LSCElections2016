@@ -25,6 +25,8 @@ var latlngbounds        		= null; 		// for panning and zooming to include all se
 var selectedSchoolID				= null; 		// passing of info for poping selected school infowindow
 var searchtype							= null; 		// allschools, oneschool, address
 var chicago;
+var satisfiedCount 			= 0;
+var availableCount			= 0;
 
 
 function initializeMap() {
@@ -258,6 +260,8 @@ function addressQuery(d) {
 // creates markers and infowindow data
 function createMarkers(d) {
 	//console.log(d);
+	satisfiedCount=0;
+	availableCount=0;
 	var ulist =  "" ;
 	var ulistlength= "" ;
 	if( d.rows !== null && d.rows !== undefined ) {
@@ -281,7 +285,11 @@ function createMarkers(d) {
 			var image       	= getImage(pstat, cstat);
 			var sweight       = getWeight(sid);
 			var attending     = getAttending(sid);
-
+			if(pstat === "I" || cstat === "I" ){
+				availableCount++;
+			}else{
+				satisfiedCount++;
+			}
 			var marker 		  = new google.maps.Marker({
 				id 					  : sid,
 				lat           : slat,
@@ -355,13 +363,12 @@ function createResultsList() {
 	//console.log("createResultsList: "+markersArray.length);
 	var results = "";
 	if (markersArray) {
-
 		// sort alphabetically by name
 		// thanks to: http://stackoverflow.com/questions/14208651/javascript-sort-key-value-pair-object-based-on-value
 		// markersArray = markersArray.sort(function (a, b) {
 		// 	return a.name.localeCompare( b.name );
 		// });
-		results += "<div id='locationcount'><span>"+markersArray.length+" locations</span><button id='btnHeatmap' class='btn btn-default btn-xs pull-right hidden' onclick='toggleHeatmap()' style='margin-right:10px;'>Heatmap</button><button id='btnSignups' class='btn btn-default btn-xs pull-right hidden' onclick='toggleSignupCircles()' style='margin-right:10px;'>Signups</button></div>";
+		results += "<div id='locationcount'><span>"+markersArray.length+" locations</span>&nbsp;&nbsp;<span style='color:#1E5F08; margin-left:0;'>Satisfied: "+satisfiedCount +"</span>&nbsp;&nbsp;<span style='color:#B20000;margin-left:0;'>Available: "+availableCount +"</span><button id='btnHeatmap' class='btn btn-default btn-xs pull-right hidden' onclick='toggleHeatmap()' style='margin-right:10px;'>Heatmap</button><button id='btnSignups' class='btn btn-default btn-xs pull-right hidden' onclick='toggleSignupCircles()' style='margin-right:10px;'>Signups</button></div>";
 		for (i in markersArray) {
 			var linkcolor = getLinkColor(markersArray[i].pstat, markersArray[i].cstat );
 			results += "" +

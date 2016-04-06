@@ -208,6 +208,10 @@ div.hopscotch-bubble .hopscotch-bubble-close { width:18px;}
 
 		#headingtitle 				{ font-size: 20px;
 		 												margin-bottom: 0px;}
+		#locationcount span 	{
+															margin-left:5px;
+														}
+
 		}
 
 
