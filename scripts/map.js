@@ -350,6 +350,7 @@ function closeinfowindow() {
 		searchPolyAttendance.setMap(null);
 	}
 }
+
 function createResultsList() {
 	//console.log("createResultsList: "+markersArray.length);
 	var results = "";
@@ -398,8 +399,6 @@ function createResultsList() {
 
 }
 
-
-
 function displayLSCBoundary(id) {
 	//show the boundaries of the school
 	if (searchPolyAttendance != null) {
@@ -421,8 +420,6 @@ function displayLSCBoundary(id) {
 	});
 	searchPolyAttendance.setMap(map);
 }
-
-
 
 // populates the info window
 // called from markerclick and resultslist click
