@@ -20,10 +20,10 @@
           {
             title: "Results",
             content: "Click on your school to find out the parent and community candidate amounts.",
-            target: "resultListContainer",
+            target: "locationcount",
             placement: "bottom",
             xOffset: 0,
-            yOffset: -30
+            yOffset: 30
           }
 
       ],

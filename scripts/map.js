@@ -13,6 +13,7 @@ var APIurl                	= "https://secure.cps.edu/json/lscvacancies2016?callb
 var heatmap 								= null;
 var heatMapData 						= [];
 var studentCountArray 			= [];
+var arrayforautocomplete		= [];
 var map;
 var geocoder;
 var addrMarker							= null;
@@ -32,7 +33,7 @@ var availableCount			= 0;
 function initializeMap() {
 
 	clearSearch();
-	//getStudentCount();
+	getCount();
 
 
 	var grayStyles = [
@@ -128,12 +129,17 @@ function initializeMap() {
 	//get the schools for the dropdown
 	//queryForSchoolsDD();
 
-	mapQueryAll("all");
+	//mapQueryAll("all");
 
+	hopscotch.startTour(maptourlg, 0);
 
 }
 
-function getStudentCount(){
+function getCount(){
+	studentCountArray =[];
+	arrayforautocomplete = [];
+	$("#txtSearchAddress").val('');
+	searchtype = "allschools";
 	$.ajax({
 		type:       "GET" ,
 		url:        "https://secure.cps.edu/json/lscvacancies2016?callback=?",
@@ -143,39 +149,109 @@ function getStudentCount(){
 			// above error is not called when dev is not available
 			// alert("An error has occurred getting student count information.");
 			console.log(jqXHR, exception);
+			results = "<span style='color:red;'>There was a problem with the search. Please check your address and search again or call 311 to find your preferred school.</span>";
+			$("#resultList").html(results);
 		},
 		success:    function(d){
 									$.each(d,function(i,r){
-										console.log(r);
-	                  //  studentCountArray.push({
-										//
-	                  //    });
+										//console.log(i,r);
+											var sid    =  (d[i].SchoolId);
+											var slat     		=  (d[i].Lat);
+											var slng     		=  (d[i].Lng);
+											var sname     		=  (d[i].SchoolName);
+											var saddress     =  (d[i].Address);
+											var sphone     	=  (d[i].Phone);
+											var stype     		=  (d[i].SchoolType);
+											var ptmax        =  (d[i].PARENT_MAX);
+											var ptcand       =  (d[i].PARENT_CAND);
+											var ptstat       =  (d[i].PARENT_STAT);
+											var cmmax        =  (d[i].COMMUNITY_MAX);
+											var cmcand       =  (d[i].COMMUNITY_CAND);
+											var cmstat       =  (d[i].COMMUNITY_STAT);
+											studentCountArray.push({id:sid, lat:slat, lng:slng, name:sname, address:saddress , phone:sphone, type:stype, pmax:ptmax, pcand:ptcand, pstat:ptstat, cmax:cmmax , ccand:cmcand, cstat:cmstat  });
+											arrayforautocomplete.push(sname);
 	                 });
 
-			// for (var i = 0; i < d.length; i++) {
-			// 	var sid    =  (d[i].SchoolId);
-			// 	var slat     		=  (d[i].Lat);
-			// 	var slng     		=  (d[i].Lng);
-			// 	var sname     		=  (d[i].SchoolName);
-			// 	var saddress     =  (d[i].Address);
-			// 	var sphone     	=  (d[i].Phone);
-			// 	var stype     		=  (d[i].SchoolType);
-			// 	var ptmax        =  (d[i].PARENT_MAX);
-			// 	var ptcand       =  (d[i].PARENT_CAND);
-			// 	var ptstat       =  (d[i].PARENT_STAT);
-			// 	var cmmax        =  (d[i].COMMUNITY_MAX);
-			// 	var cmcand       =  (d[i].COMMUNITY_CAND);
-			// 	var cmstat       =  (d[i].COMMUNITY_STAT);
-			// 	studentCountArray.push({id:sid, lat:slat, lng:slng, name:sname, address:saddress , phone:sphone, type:stype, pmax:ptmax, pcand:ptcand, pstat:ptstat, cmax:cmmax , ccand:cmcand, cstat:cmstat  });
-			// }
-
-			$("#btnHeatmap").removeClass("hidden");
-			$("#btnSignups").removeClass("hidden");
-		},
+									createMarkersJson(studentCountArray);
+									initAutocomplete();
+									//$("#btnHeatmap").removeClass("hidden");
+									//$("#btnSignups").removeClass("hidden");
+								},
 	});
 }
 
 
+// initialize Autocomplete
+function initAutocomplete() {
+  $( "#txtSearchAddress" ).autocomplete({
+    appendTo: "#autocomplete-input-group",
+    source: arrayforautocomplete,
+
+      focus: function( event, ui ) { // autocomplete result is focused on
+                $("#txtSearchAddress").val( ui.item.value );
+                return false;
+          },
+      select: function ( event, ui ) { // autocomplete result is selected
+              event.preventDefault();
+              $("#txtSearchAddress").val( ui.item.value );
+              searchInputField();
+          },
+      close: function ( event, ui ) {
+         //$("#autocomplete").val("" );
+          //console.log("close");
+          },
+      search: function ( event, ui ) {
+				$( "#txtSearchAddress" ).autocomplete( "close" );
+         //console.log($("#autocomplete").val());
+         //console.log("search");
+          },
+      open: function() {
+        //$('.ui-autocomplete').css('width','300px');
+        //$('.ui-autocomplete').css('margin-left','70px');
+        //$('.ui-autocomplete').css('height','300px');
+          },
+      change: function() {
+        //$('.ui-autocomplete').css('width','300px');
+        //$('.ui-autocomplete').css('margin-left','70px');
+        //$('.ui-autocomplete').css('height','300px');
+          }
+
+    });
+}
+
+
+function searchInputField() {
+	clearSearch();
+  //school names are uppercase
+  var theInput = $.trim( $("#txtSearchAddress").val().toUpperCase() );
+
+  if(theInput != "") {
+    // check if the value is found in the autocomplete array
+    // autocompleteArray has school names
+    if ($.inArray(theInput, arrayforautocomplete) !== -1) {
+        _trackClickEventWithGA("Search", "School Name LSC", theInput);
+        schoolSearch(theInput)
+        return;
+    } else { //  value is not in the array
+			if(/^\d.*/.test(theInput)) {// - starts with a number
+				addressSearch();
+				return;
+			}
+
+		}
+	}
+}
+
+
+function schoolSearch(theInput) {
+  searchtype = "oneschool";
+  var query = "SELECT ID, Lat, Long, Name, Address, Phone, Type "+
+                    " FROM " + fusionTableId + " WHERE Name = '" + theInput + "'";
+  encodeQuery(query, createMarkers);
+}
+
+
+// not used
 // called from initialize script "all" displays all SchoolTypes
 // when called from the legend displays by SchoolType
 function mapQueryAll(st) {
@@ -195,14 +271,14 @@ function mapQueryAll(st) {
 }
 
 
-// an address search displays one elementary, one highschool, one library, one park.
+// displays schools whose boundaries encompass the address loc
 function addressSearch() {
 	var theInput = $.trim( $("#txtSearchAddress").val().toUpperCase() );
 	var address = theInput;
 	if (address !== "" ) {
 		clearSearch();
-		if (address.toLowerCase().indexOf("chicago, illinois") === -1) {
-			address = address + " chicago, illinois";
+		if (address.toUpperCase().indexOf("chicago, illinois") === -1) {
+			address = address + " CHICAGO, ILLINOIS";
 		}
 		geocoder.geocode({ 'address': address }, function (results, status) {
 			if (status === google.maps.GeocoderStatus.OK) {
@@ -240,6 +316,7 @@ function addressSearch() {
 
 }
 
+// called from the address search
 function addressQuery(d) {
 	var query =  "" ;
 	var addressMarkersArray=[];
@@ -249,13 +326,118 @@ function addressQuery(d) {
 			addressMarkersArray.push(sid);
 		}
 	}
-	query = "SELECT ID, Lat, Long, Name, Address, Phone, Type, PARENT_MAX, PARENT_CAND, PARENT_STAT, COMMUNITY_MAX, COMMUNITY_CAND, COMMUNITY_STAT  FROM "+ fusionTableId + " WHERE ID IN (" + addressMarkersArray + ") ORDER BY Name ";
+	query = "SELECT ID, Lat, Long, Name, Address, Phone, Type  FROM "+ fusionTableId + " WHERE ID IN (" + addressMarkersArray + ") ORDER BY Name ";
 	encodeQuery(query, createMarkers);
+
+	// query = "SELECT ID  FROM "+ fusionTableId + " WHERE ID IN (" + addressMarkersArray + ") ";
+	// encodeQuery(query, createMarkersJson);
 }
 
-// SELECT ID, Lat, Long, Name, Address, Phone, Type,
-// PARENT_MAX, PARENT_CAND, PARENT_STAT, COMMUNITY_MAX, COMMUNITY_CAND, COMMUNITY_STAT
+
+// called from an all search
 // creates markers and infowindow data
+function createMarkersJson(d) {
+	//console.log(d);
+	satisfiedCount=0;
+	availableCount=0;
+	if (d.kind === "fusiontables#sqlresponse") {//check for fusiondata from address lookup
+		var isfusion = true;
+	}else{
+		var isfusion = false;
+	}
+
+	if( d !== null && d !== undefined ) {
+
+		for (var i = 0; i < d.length; i++) {
+			if (isfusion) {
+				r=d.rows[i];
+			}else{
+				r=d[i];
+			}
+			var counts			  = getResults(r.id);
+			var pmax			  	= counts[0];
+			var pcand			  	= counts[1];
+			var pstat			  	= counts[2];
+			var cmax			  	= counts[3];
+			var ccand			  	= counts[4];
+			var cstat			  	= counts[5];
+
+			var sposition	  		= new google.maps.LatLng(r.lat,r.lng);
+			var image       		= getImage(r.pstat, r.cstat);
+			var sweight       	= getWeight(r.id);
+			var sattending     	= getAttending(r.id);
+
+			if(r.pstat === "I" || r.cstat === "I" ){
+				availableCount++;
+			}else{
+				satisfiedCount++;
+			}
+			var marker 		  = new google.maps.Marker({
+				id 					  : r.id,
+				lat           : r.lat,
+				lng           : r.lng,
+				name 				  : r.name,
+				address		 		: r.address,
+				phone	 				: r.phone,
+				type 		      : r.type,
+				pmax					: r.pmax,
+				pcand					: r.pcand,
+				pstat					: r.pstat,
+				cmax					: r.cmax,
+				ccand					: r.ccand,
+				cstat					: r.cstat,
+				position	 		: sposition,
+				rowid 			 	: i,
+				icon 					: image,
+				map 					: map,
+				weight        : sweight,
+				attending     : sattending
+			});
+
+			if(marker.weight !== 0) {
+				heatMapData.push({location:marker.position, weight:marker.weight});
+			}
+
+			latlngbounds.extend(sposition);
+			var fn = markerClick(map, marker, infoWindowsas);
+			google.maps.event.addListener(marker, 'click', fn);
+			markersArray.push(marker);
+			infoWindowsas	= new google.maps.InfoWindow();
+
+		} // end loop
+
+		google.maps.event.addListener(infoWindowsas, 'closeclick', closeinfowindow );
+		createResultsList();
+
+	}else{  // nothing returned from query
+		// will happen if address loc is not within a boundary or bad query
+		results = "<span style='color:red;'>There was a problem with the search. Please check your address and search again or call 311 to find your preferred school.</span>";
+		$("#resultList").html(results);
+		return;
+	}
+
+	//setMapZoom();
+
+	// if there is jsonp data then initialize the heat map but don't view it until button is clicked.
+	// map also displays circles based on signup numbers.
+	// if(isHeatMapData()) {
+	// 	heatmap = new google.maps.visualization.HeatmapLayer({
+	// 		data: heatMapData,
+	// 		dissipating: true,
+	// 		radius:40 //, don't display just yet
+	// 		//map: map
+	// 	});
+	// 	$("#btnHeatmap").removeClass("hidden");
+	// 	$("#btnSignups").removeClass("hidden");
+	// }else {
+	// 	$("#btnHeatmap").removeClass("hidden").addClass("hidden");
+	// 	$("#btnSignups").removeClass("hidden").addClass("hidden");
+	// }
+}
+
+
+
+// called from an address search
 function createMarkers(d) {
 	//console.log(d);
 	satisfiedCount=0;
@@ -273,12 +455,21 @@ function createMarkers(d) {
 			var	saddress			= ulist[i][4];
 			var	sphone	 			= ulist[i][5];
 			var stype			  	= ulist[i][6];
-			var pmax			  	= ulist[i][7];
-			var pcand			  	= ulist[i][8];
-			var pstat			  	= ulist[i][9];
-			var cmax			  	= ulist[i][10];
-			var ccand			  	= ulist[i][11];
-			var cstat			  	= ulist[i][12];
+			// var pmax			  	= ulist[i][7];
+			// var pcand			  	= ulist[i][8];
+			// var pstat			  	= ulist[i][9];
+			// var cmax			  	= ulist[i][10];
+			// var ccand			  	= ulist[i][11];
+			// var cstat			  	= ulist[i][12];
+			var counts			  = getResults(sid);
+
+			var pmax			  	= counts[0];
+			var pcand			  	= counts[1];
+			var pstat			  	= counts[2];
+			var cmax			  	= counts[3];
+			var ccand			  	= counts[4];
+			var cstat			  	= counts[5];
+
 			var sposition	  	= new google.maps.LatLng(slat,slng);
 			var image       	= getImage(pstat, cstat);
 			var sweight       = getWeight(sid);
@@ -332,22 +523,34 @@ function createMarkers(d) {
 		return;
 	}
 
-	setMapZoom();
+
+	//setMapZoom();
 
 	// if there is jsonp data then initialize the heat map but don't view it until button is clicked.
 	// map also displays circles based on signup numbers.
-	if(isHeatMapData()) {
-		heatmap = new google.maps.visualization.HeatmapLayer({
-			data: heatMapData,
-			dissipating: true,
-			radius:40 //, don't display just yet
-			//map: map
-		});
-		$("#btnHeatmap").removeClass("hidden");
-		$("#btnSignups").removeClass("hidden");
-	}else {
-		$("#btnHeatmap").removeClass("hidden").addClass("hidden");
-		$("#btnSignups").removeClass("hidden").addClass("hidden");
+	// if(isHeatMapData()) {
+	// 	heatmap = new google.maps.visualization.HeatmapLayer({
+	// 		data: heatMapData,
+	// 		dissipating: true,
+	// 		radius:40 //, don't display just yet
+	// 		//map: map
+	// 	});
+	// 	$("#btnHeatmap").removeClass("hidden");
+	// 	$("#btnSignups").removeClass("hidden");
+	// }else {
+	// 	$("#btnHeatmap").removeClass("hidden").addClass("hidden");
+	// 	$("#btnSignups").removeClass("hidden").addClass("hidden");
+	// }
+}
+
+function getResults(sid){
+	var result = $.grep(studentCountArray, function(e){ return e.id == sid; });
+	if (result.length === 0) {
+	  return 0;
+	} else if (result.length === 1) {
+	  return [result[0].pmax, result[0].pcand,result[0].pstat,result[0].cmax,result[0].ccand,result[0].cstat];
+	} else {
+		return [result[0].pmax, result[0].pcand,result[0].pstat,result[0].cmax,result[0].ccand,result[0].cstat];
 	}
 }
 
@@ -363,9 +566,9 @@ function createResultsList() {
 	if (markersArray) {
 		// sort alphabetically by name
 		// thanks to: http://stackoverflow.com/questions/14208651/javascript-sort-key-value-pair-object-based-on-value
-		// markersArray = markersArray.sort(function (a, b) {
-		// 	return a.name.localeCompare( b.name );
-		// });
+		markersArray = markersArray.sort(function (a, b) {
+			return a.name.localeCompare( b.name );
+		});
 		results += "<div id='locationcount'><span>"+markersArray.length+" locations</span>&nbsp;&nbsp;<img src='images/green_star.png' /><span style='color:#1E5F08; margin-left:2px;'>Satisfied: "+satisfiedCount +"</span>&nbsp;&nbsp;<img src='images/red_ex.png' /><span style='color:#B20000;margin-left:2px;'>Available: "+availableCount +"</span><button id='btnHeatmap' class='btn btn-default btn-xs pull-right hidden' onclick='toggleHeatmap()' style='margin-right:10px;'>Heatmap</button><button id='btnSignups' class='btn btn-default btn-xs pull-right hidden' onclick='toggleSignupCircles()' style='margin-right:10px;'>Signups</button></div>";
 		for (i in markersArray) {
 			var linkcolor = getLinkColor(markersArray[i].pstat, markersArray[i].cstat );
@@ -394,15 +597,19 @@ function createResultsList() {
 			}
 			results +="</div>" ;
 		}
-
 	}
 
 	$("#resultList").html(results);
 	$("#resultListContainer").scrollTop(0);
 
-
-
+	if (searchtype === "oneschool") {
+		var m="";
+		openInfoWindow(markersArray[0].id, markersArray[0].name, markersArray[0].address, markersArray[0].phone, markersArray[0].type, markersArray[0].lat, markersArray[0].lng, markersArray[0].weight, markersArray[0].attending, markersArray[0].pmax, markersArray[0].pcand, markersArray[0].pstat, markersArray[0].cmax, markersArray[0].ccand, markersArray[0].cstat);
+	}else{
+		setMapZoom();
+	}
 }
+
 
 function displayLSCBoundary(id) {
 	//show the boundaries of the school
@@ -441,15 +648,26 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 	"<br /><a style='color:#333;' href='tel:"+phone+"'>" + phone + "</a></p>" ;
 
 	if (pstat == "I" ) {
-		contents +=	"<div style='color:#B20000;'>Parent Candidates Needed: <strong>" + parentNeed + "</strong></div>"
+		contents +=	"<div style='color:#B20000;'>Parent Candidates: <strong>" + pcand  + " of "+ pmax +"</strong></div>";
 	}else{
-		contents +=	"<div style='color:#1E5F08;'>Parent Candidates Total: <strong>" + pcand + "</strong></div>"
+		contents +=	"<div style='color:#1E5F08;'>Parent Candidates: <strong>" + pcand  + " of "+ pmax +"</strong></div>";
 	}
 	if (cstat == "I" ) {
-		contents +=	"<div style='color:#B20000;'>Community Candidates Needed: <strong>" + communityNeed + "</strong></div>"
+		contents +=	"<div style='color:#B20000;'>Community Candidates: <strong>" + ccand  + " of "+ cmax +"</strong></div>";
 	}else{
-		contents +=	"<div style='color:#1E5F08;'>Community Candidates Total: <strong>" + ccand + "</strong></div>";
+		contents +=	"<div style='color:#1E5F08;'>Community Candidates: <strong>" + ccand  + " of "+ cmax +"</strong></div>";
 	}
+	//
+	// if (pstat == "I" ) {
+	// 	contents +=	"<div style='color:#B20000;'>Parent Candidates Needed: <strong>" + parentNeed + "</strong></div>"
+	// }else{
+	// 	contents +=	"<div style='color:#1E5F08;'>Parent Candidates: <strong>" + pcand + "</strong></div>"
+	// }
+	// if (cstat == "I" ) {
+	// 	contents +=	"<div style='color:#B20000;'>Community Candidates Needed: <strong>" + communityNeed + "</strong></div>"
+	// }else{
+	// 	contents +=	"<div style='color:#1E5F08;'>Community Candidates: <strong>" + ccand + "</strong></div>";
+	// }
 
 	// if(isHeatMapData()) {
 	//   if(weight>0) {
@@ -509,11 +727,12 @@ function setMapZoom() {
 		map.setZoom(13);
 		positionMarkersOnMap();
 
-	} else if (searchtype === "oneschool") {//not used
+	} else if (searchtype === "oneschool") {
+		positionMarkersOnMap();
 		//one school from dd
-		map.fitBounds(latlngbounds);
-		map.setZoom(14);//map.setZoom(map.getZoom()-1);	//zoom one click out
-		query4infowindowData(selectedSchoolID);
+		// map.fitBounds(latlngbounds);
+		// map.setZoom(14);//map.setZoom(map.getZoom()-1);	//zoom one click out
+		// query4infowindowData(selectedSchoolID);
 	}
 
 }

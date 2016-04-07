@@ -175,6 +175,14 @@ a.link-get-directions {
 /*override hopscotch for bigger close x */
 div.hopscotch-bubble .hopscotch-bubble-close { width:18px;}
 
+
+.ui-autocomplete {
+	max-height:300px !important;
+	overflow-y: : auto !important;
+	overflow-x: hidden !important;
+}
+
+
 .blue {color: #274976;}
 .green {color: #060;}
 .red {color: #d73e3e;}
@@ -201,7 +209,6 @@ div.hopscotch-bubble .hopscotch-bubble-close { width:18px;}
 @media (max-width: 767px) {
 	#search        				{ width:100%; left:0;  }
 	#resultListContainer 	{	max-height:80px; }
-	#legendlist a 				{	font-size:.8em; }
 	#txtSearchAddress			{	font-size: .9em; }
 	.legendtooltip img		{	width: 15px; }
 	/*#input-schoolname			{ width: 100%; }*/
