@@ -13,6 +13,7 @@ var APIurl                	= "https://secure.cps.edu/json/lscvacancies2016?callb
 var heatmap 								= null;
 var heatMapData 						= [];
 var studentCountArray 			= [];
+var voteCountArray 					= [];
 var arrayforautocomplete		= [];
 var map;
 var geocoder;
@@ -149,8 +150,52 @@ function getCount(){
 			// above error is not called when dev is not available
 			// alert("An error has occurred getting student count information.");
 			console.log(jqXHR, exception);
-			results = "<span style='color:red;'>There was a problem with the search. Please check your address and search again or call 311 to find your preferred school.</span>";
-			$("#resultList").html(results);
+			// results = "<span style='color:red;'>There was a problem getting the candidate count.</span>";
+			// $("#resultList").html(results);
+		},
+		success:    function(d){
+									$.each(d,function(i,r){
+										//console.log(i,r);
+											var sid    =  (d[i].SchoolId);
+											var slat     		=  (d[i].Lat);
+											var slng     		=  (d[i].Lng);
+											var sname     		=  (d[i].SchoolName);
+											var saddress     =  (d[i].Address);
+											var sphone     	=  (d[i].Phone);
+											var stype     		=  (d[i].SchoolType);
+											var ptmax        =  (d[i].PARENT_MAX);
+											var ptcand       =  (d[i].PARENT_CAND);
+											var ptstat       =  (d[i].PARENT_STAT);
+											var cmmax        =  (d[i].COMMUNITY_MAX);
+											var cmcand       =  (d[i].COMMUNITY_CAND);
+											var cmstat       =  (d[i].COMMUNITY_STAT);
+											studentCountArray.push({id:sid, lat:slat, lng:slng, name:sname, address:saddress , phone:sphone, type:stype, pmax:ptmax, pcand:ptcand, pstat:ptstat, cmax:cmmax , ccand:cmcand, cstat:cmstat  });
+											arrayforautocomplete.push(sname);
+	                 });
+
+									createMarkersJson(studentCountArray);
+									initAutocomplete();
+									//$("#btnHeatmap").removeClass("hidden");
+									//$("#btnSignups").removeClass("hidden");
+								},
+	});
+}
+
+
+function getVoteCount(){
+	voteCountArray =[];
+	searchtype = "allschools";
+	$.ajax({
+		type:       "GET" ,
+		url:        "https://secure.cps.edu/json/lscvacancies2016/GetCandidateVoteTotal?callback=?",
+		dataType:   "jsonp",
+		error:      function (jqXHR, exception) {
+			// net::ERR_NAME_NOT_RESOLVED
+			// above error is not called when dev is not available
+			// alert("An error has occurred getting student count information.");
+			console.log(jqXHR, exception);
+			// results = "<span style='color:red;'>There was a problem getting the candidate vote count</span>";
+			// $("#resultList").html(results);
 		},
 		success:    function(d){
 									$.each(d,function(i,r){
@@ -411,7 +456,7 @@ function createMarkersJson(d) {
 
 	}else{  // nothing returned from query
 		// will happen if address loc is not within a boundary or bad query
-		results = "<span style='color:red;'>There was a problem with the search. Please check your address and search again or call 311 to find your preferred school.</span>";
+		results = "<span style='color:red;'>We're sorry, the search didn't turn up anything.</span>";
 		$("#resultList").html(results);
 		return;
 	}
@@ -518,7 +563,7 @@ function createMarkers(d) {
 
 	}else{  // nothing returned from query
 		// will happen if address loc is not within a boundary or bad query
-		results = "<span style='color:red;'>There was a problem with the search. Please check your address and search again or call 311 to find your preferred school.</span>";
+		results = "<span style='color:red;'>We're sorry, the search didn't turn up anything.</span>";
 		$("#resultList").html(results);
 		return;
 	}
