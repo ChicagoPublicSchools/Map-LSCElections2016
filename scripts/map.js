@@ -37,7 +37,7 @@ function initializeMap() {
 
 	var grayStyles = [
 		{
-			"featureType": "road",
+"featureType": "road",
 			"elementType": "geometry.fill",
 			"stylers": [
 				{ "lightness": 1 },
@@ -97,7 +97,7 @@ function initializeMap() {
 				{ "saturation": -70 }
 			]
 		}
-	]
+	];
 	geocoder                = new google.maps.Geocoder();
 	chicago									= new google.maps.LatLng(41.839, -87.67); // default center of map
 	var myOptions = {
@@ -108,7 +108,6 @@ function initializeMap() {
 		scrollwheel: false,
 		navigationControl: true,
 		panControl: false,
-		zoomControl: true,
 		scaleControl: false,
 		mapTypeControl: false,
 		mapTypeControlOptions: {
@@ -207,8 +206,7 @@ function addressSearch() {
 		}
 		geocoder.geocode({ 'address': address }, function (results, status) {
 			if (status === google.maps.GeocoderStatus.OK) {
-				geoaddress = (results[0].formatted_address);
-				map.setCenter(results[0].geometry.location);
+				geoaddress = (results[0].formatted_address);				map.setCenter(results[0].geometry.location);
 				if (addrMarker) { addrMarker.setMap(null); }
 				addrMarker = new google.maps.Marker({
 					position: results[0].geometry.location,
@@ -368,7 +366,7 @@ function createResultsList() {
 		// markersArray = markersArray.sort(function (a, b) {
 		// 	return a.name.localeCompare( b.name );
 		// });
-		results += "<div id='locationcount'><span>"+markersArray.length+" locations</span>&nbsp;&nbsp;<span style='color:#1E5F08; margin-left:0;'>Satisfied: "+satisfiedCount +"</span>&nbsp;&nbsp;<span style='color:#B20000;margin-left:0;'>Available: "+availableCount +"</span><button id='btnHeatmap' class='btn btn-default btn-xs pull-right hidden' onclick='toggleHeatmap()' style='margin-right:10px;'>Heatmap</button><button id='btnSignups' class='btn btn-default btn-xs pull-right hidden' onclick='toggleSignupCircles()' style='margin-right:10px;'>Signups</button></div>";
+		results += "<div id='locationcount'><span>"+markersArray.length+" locations</span>&nbsp;&nbsp;<img src='images/green_star.png' /><span style='color:#1E5F08; margin-left:2px;'>Satisfied: "+satisfiedCount +"</span>&nbsp;&nbsp;<img src='images/red_ex.png' /><span style='color:#B20000;margin-left:2px;'>Available: "+availableCount +"</span><button id='btnHeatmap' class='btn btn-default btn-xs pull-right hidden' onclick='toggleHeatmap()' style='margin-right:10px;'>Heatmap</button><button id='btnSignups' class='btn btn-default btn-xs pull-right hidden' onclick='toggleSignupCircles()' style='margin-right:10px;'>Signups</button></div>";
 		for (i in markersArray) {
 			var linkcolor = getLinkColor(markersArray[i].pstat, markersArray[i].cstat );
 			results += "" +

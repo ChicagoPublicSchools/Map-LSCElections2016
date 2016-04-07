@@ -1,14 +1,14 @@
  var maptourlg = {
         id: "maptour-lg",
      steps: [
-       {
-         title: "Note",
-         content: "The information on this map is not final for any election. Contact your local school or call LSC Relations at 773-553-1400 with questions. ",
-         target: "headingtitle",
-         placement: "bottom",
-         xOffset: 50,
-         yOffset: -5
-       },
+       //{
+//         title: "Note",
+//         content: "Contact your local school or call LSC Relations at 773-553-1400 with questions. <strong>Click Next to find out how to use this map.</strong> ",
+//         target: "legendlist",
+//         placement: "bottom",
+//         xOffset: 0,
+//         yOffset: -20
+//       },
           {
             title: "Find Your LSC",
             content: "Enter your address to find schools where you are eligible to be a candidate. ",
@@ -19,11 +19,11 @@
           },
           {
             title: "Results",
-            content: "Schools in red have vacancies. Schools in green have enough candidates. ",
+            content: "Click on your school to find out the parent and community candidate amounts.",
             target: "resultListContainer",
             placement: "bottom",
             xOffset: 0,
-            yOffset: -50
+            yOffset: -30
           }
 
       ],
