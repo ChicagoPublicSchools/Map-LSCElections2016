@@ -201,26 +201,13 @@ function getVoteCount(){
 									$.each(d,function(i,r){
 										//console.log(i,r);
 											var sid    =  (d[i].SchoolId);
-											var slat     		=  (d[i].Lat);
-											var slng     		=  (d[i].Lng);
-											var sname     		=  (d[i].SchoolName);
-											var saddress     =  (d[i].Address);
-											var sphone     	=  (d[i].Phone);
-											var stype     		=  (d[i].SchoolType);
-											var ptmax        =  (d[i].PARENT_MAX);
-											var ptcand       =  (d[i].PARENT_CAND);
-											var ptstat       =  (d[i].PARENT_STAT);
-											var cmmax        =  (d[i].COMMUNITY_MAX);
-											var cmcand       =  (d[i].COMMUNITY_CAND);
-											var cmstat       =  (d[i].COMMUNITY_STAT);
-											studentCountArray.push({id:sid, lat:slat, lng:slng, name:sname, address:saddress , phone:sphone, type:stype, pmax:ptmax, pcand:ptcand, pstat:ptstat, cmax:cmmax , ccand:cmcand, cstat:cmstat  });
-											arrayforautocomplete.push(sname);
-	                 });
+											var mtype   =  (d[i].LSCMemberType);
+											var mname   =  (d[i].MemberName);
+											var mvotes  =  (d[i].MemberVotes);
 
-									createMarkersJson(studentCountArray);
-									initAutocomplete();
-									//$("#btnHeatmap").removeClass("hidden");
-									//$("#btnSignups").removeClass("hidden");
+											voteCountArray.push({id:sid, type:mtype, name:mname, votes:mvotes  });
+
+	                 });
 								},
 	});
 }
@@ -598,6 +585,17 @@ function getResults(sid){
 		return [result[0].pmax, result[0].pcand,result[0].pstat,result[0].cmax,result[0].ccand,result[0].cstat];
 	}
 }
+//voteCountArray.push({id:sid, type:mtype, name:mname, votes:mvotes  });
+function getVotes(sid){
+	var result = $.grep(voteCountArray, function(e){ return e.id == sid; });
+	if (result.length === 0) {
+	  return 0;
+	} else if (result.length === 1) {
+	  return [result[0].type, result[0].name, result[0].votes];
+	} else {
+		return result;
+	}
+}
 
 function closeinfowindow() {
 	if (searchPolyAttendance != null) {
@@ -681,11 +679,13 @@ function displayLSCBoundary(id) {
 // populates the info window
 // called from markerclick and resultslist click
 function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attending, pmax, pcand, pstat, cmax, ccand, cstat) {
-	var sposition	  = new google.maps.LatLng(lat,lng);
+	var sposition	  	= new google.maps.LatLng(lat,lng);
 	//var headcolor   = getLinkColor(pstat, cstat);
-	var typeText   	= getType(type);
-	var parentNeed = (pmax-pcand);
+	var typeText   		= getType(type);
+	var parentNeed 		= (pmax-pcand);
 	var communityNeed = (cmax-ccand);
+	//var results			  = getVotes(id);
+
 
 	var contents = "<div class='googft-info-window'>" +
 	"<h4>" + name + "</h4>" +
@@ -702,6 +702,12 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 	}else{
 		contents +=	"<div style='color:#1E5F08;'>Community Candidates: <strong>" + ccand  + " of "+ cmax +"</strong></div>";
 	}
+
+	// for (i in results) {
+	// 	console.log(results[i].name)
+	// }
+
+
 	//
 	// if (pstat == "I" ) {
 	// 	contents +=	"<div style='color:#B20000;'>Parent Candidates Needed: <strong>" + parentNeed + "</strong></div>"
