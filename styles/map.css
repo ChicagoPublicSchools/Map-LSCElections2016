@@ -175,11 +175,23 @@ a.link-get-directions {
 /*override hopscotch for bigger close x */
 div.hopscotch-bubble .hopscotch-bubble-close { width:18px;}
 
+#tblvotes  {
+  margin-top:10px;
+ }
+#tblvotes td {
+  padding-top:2px;
+  padding-bottom:1px;
+}
+#divvotes{
+  max-height: 200px;
+  overflow-y: auto ;
+	overflow-x: hidden ;
+}
 
 .ui-autocomplete {
-	max-height:300px !important;
-	overflow-y: : auto !important;
-	overflow-x: hidden !important;
+	max-height: 300px ;
+	overflow-y: auto ;
+	overflow-x: hidden ;
 }
 
 
@@ -219,7 +231,7 @@ div.hopscotch-bubble .hopscotch-bubble-close { width:18px;}
 		#headingtitle 				{ font-size: 20px;
 		 												margin-bottom: 0px;}
 		#locationcount span 	{ margin-left:2px; }
-
+      #divvotes           { max-height: 100px;}
 		}
 
 

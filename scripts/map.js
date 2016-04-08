@@ -35,7 +35,7 @@ function initializeMap() {
 
 	clearSearch();
 	getCount();
-
+	getVoteCount();
 
 	var grayStyles = [
 		{
@@ -684,7 +684,7 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 	var typeText   		= getType(type);
 	var parentNeed 		= (pmax-pcand);
 	var communityNeed = (cmax-ccand);
-	//var results			  = getVotes(id);
+	var results			  = getVotes(id);
 
 
 	var contents = "<div class='googft-info-window'>" +
@@ -702,12 +702,13 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 	}else{
 		contents +=	"<div style='color:#1E5F08;'>Community Candidates: <strong>" + ccand  + " of "+ cmax +"</strong></div>";
 	}
+//console.log(results[i].type +" "+ results[i].name +" "+ results[i].votes)
+contents +=	"<div id='divvotes'><table id='tblvotes' class='table table-striped table-condensed'><tbody><tr><th>Type</th><th>Name</th><th>Votes</th></tr>";
+	for (i in results) {
+    contents +=	"<tr><td>"+results[i].type+"</td><td>"+results[i].name+"</td><td>"+results[i].votes+"</td></tr>";		
+	}
 
-	// for (i in results) {
-	// 	console.log(results[i].name)
-	// }
-
-
+contents +=	"</tbody></table></div>"
 	//
 	// if (pstat == "I" ) {
 	// 	contents +=	"<div style='color:#B20000;'>Parent Candidates Needed: <strong>" + parentNeed + "</strong></div>"
