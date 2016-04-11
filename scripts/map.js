@@ -148,7 +148,6 @@ function getCount(){
 		error:      function (jqXHR, exception) {
 			// net::ERR_NAME_NOT_RESOLVED
 			// above error is not called when dev is not available
-			// alert("An error has occurred getting student count information.");
 			console.log(jqXHR, exception);
 			// results = "<span style='color:red;'>There was a problem getting the candidate count.</span>";
 			// $("#resultList").html(results);
@@ -192,7 +191,6 @@ function getVoteCount(){
 		error:      function (jqXHR, exception) {
 			// net::ERR_NAME_NOT_RESOLVED
 			// above error is not called when dev is not available
-			// alert("An error has occurred getting student count information.");
 			console.log(jqXHR, exception);
 			// results = "<span style='color:red;'>There was a problem getting the candidate vote count</span>";
 			// $("#resultList").html(results);
@@ -263,13 +261,15 @@ function searchInputField() {
     if ($.inArray(theInput, arrayforautocomplete) !== -1) {
         _trackClickEventWithGA("Search", "School Name LSC", theInput);
         schoolSearch(theInput)
-        return;
+        //return;
     } else { //  value is not in the array
-			if(/^\d.*/.test(theInput)) {// - starts with a number
-				addressSearch();
-				return;
-			}
-
+			//if(/^\d.*/.test(theInput)) {// - starts with a number
+				//addressSearch();
+			//	return;
+			//}
+      addressSearch();
+				//return;
+    //alert("Please enter an address or a school.");
 		}
 	}
 }
@@ -386,11 +386,11 @@ function createMarkersJson(d) {
 			}else{
 				r=d[i];
 			}
-			var counts			  = getResults(r.id);
-			var pmax			  	= counts[0];
+			var counts			    = getResults(r.id);
+			var pmax			  	  = counts[0];
 			var pcand			  	= counts[1];
 			var pstat			  	= counts[2];
-			var cmax			  	= counts[3];
+			var cmax			  	  = counts[3];
 			var ccand			  	= counts[4];
 			var cstat			  	= counts[5];
 
