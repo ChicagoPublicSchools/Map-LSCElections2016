@@ -251,27 +251,28 @@ function initAutocomplete() {
 
 
 function searchInputField() {
-	clearSearch();
+	
   //school names are uppercase
   var theInput = $.trim( $("#txtSearchAddress").val().toUpperCase() );
 
-  if(theInput != "") {
+  if(theInput !== "") {
+    clearSearch();
     // check if the value is found in the autocomplete array
     // autocompleteArray has school names
     if ($.inArray(theInput, arrayforautocomplete) !== -1) {
         _trackClickEventWithGA("Search", "School Name LSC", theInput);
         schoolSearch(theInput)
-        //return;
-    } else { //  value is not in the array
+        
+      } else { //  value is not in the array
 			//if(/^\d.*/.test(theInput)) {// - starts with a number
 				//addressSearch();
 			//	return;
 			//}
       addressSearch();
-				//return;
-    //alert("Please enter an address or a school.");
 		}
-	}
+	}else{ // empty
+    alert("Please enter an address or a school.");
+  }
 }
 
 
@@ -279,7 +280,7 @@ function schoolSearch(theInput) {
   searchtype = "oneschool";
   var query = "SELECT ID, Lat, Long, Name, Address, Phone, Type "+
                     " FROM " + fusionTableId + " WHERE Name = '" + theInput + "'";
-  encodeQuery(query, createMarkers);
+  encodeQuery(query, createMarkersJson);
 }
 
 
@@ -358,11 +359,11 @@ function addressQuery(d) {
 			addressMarkersArray.push(sid);
 		}
 	}
-	query = "SELECT ID, Lat, Long, Name, Address, Phone, Type  FROM "+ fusionTableId + " WHERE ID IN (" + addressMarkersArray + ") ORDER BY Name ";
-	encodeQuery(query, createMarkers);
+	//query = "SELECT ID, Lat, Long, Name, Address, Phone, Type  FROM "+ fusionTableId + " WHERE ID IN (" + addressMarkersArray + ") ORDER BY Name ";
+	//encodeQuery(query, createMarkers);
 
-	// query = "SELECT ID  FROM "+ fusionTableId + " WHERE ID IN (" + addressMarkersArray + ") ";
-	// encodeQuery(query, createMarkersJson);
+	query = "SELECT ID  FROM "+ fusionTableId + " WHERE ID IN (" + addressMarkersArray + ") ";
+	 encodeQuery(query, createMarkersJson);
 }
 
 
@@ -372,56 +373,84 @@ function createMarkersJson(d) {
 	//console.log(d);
 	satisfiedCount=0;
 	availableCount=0;
+ 
 	if (d.kind === "fusiontables#sqlresponse") {//check for fusiondata from address lookup
 		var isfusion = true;
+    var dlength = d.rows.length;
 	}else{
 		var isfusion = false;
+    var dlength = d.length;
 	}
 
-	if( d !== null && d !== undefined ) {
-
-		for (var i = 0; i < d.length; i++) {
-			if (isfusion) {
-				r=d.rows[i];
-			}else{
-				r=d[i];
+	if( d !== null && d !== undefined ) {	
+  
+		for (var i = 0; i < dlength; i++) {
+    
+    if (isfusion) {
+        // address search returns array of ids
+        // info goes and gets data from jsonp created array.
+        var info          = getInfoFromID(d.rows[i][0]);
+        var sid 		        = info[0];
+        var slat			      = info[1];
+        var slng			      = info[2];
+        var	sname 				= info[3].toUpperCase();
+        var	saddress			= info[4];
+        var	sphone	 			= info[5];
+        var stype			  	= info[6];
+			  var spmax			  	  = info[7];
+        var spcand			  	= info[8];
+        var spstat			  	= info[9];
+        var scmax			  	  = info[10];
+        var sccand			  	= info[11];
+        var scstat			  	= info[12];
+      
+      }else{
+        // other searches return array of data
+				var r=d[i];
+        var sid 		        = r.id;
+        var slat			      = r.lat;
+        var slng			      = r.lng;
+        var	sname 				= r.name.toUpperCase();
+        var	saddress			= r.address;
+        var	sphone	 			= r.phone;
+        var stype			  	= r.type;
+        var spmax			  	  = r.pmax;
+        var spcand			  	= r.pcand;
+        var spstat			  	= r.pstat;
+        var scmax			  	  = r.cmax;
+        var sccand			  	= r.ccand;
+        var scstat			  	= r.cstat;
+        
 			}
-			var counts			    = getResults(r.id);
-			var pmax			  	  = counts[0];
-			var pcand			  	= counts[1];
-			var pstat			  	= counts[2];
-			var cmax			  	  = counts[3];
-			var ccand			  	= counts[4];
-			var cstat			  	= counts[5];
+      
+			var sposition	  		= new google.maps.LatLng(slat,slng);
+			var image       		= getImage(spstat, scstat);
+			var sweight       	= getWeight(sid);
+			var sattending     	= getAttending(sid);
 
-			var sposition	  		= new google.maps.LatLng(r.lat,r.lng);
-			var image       		= getImage(r.pstat, r.cstat);
-			var sweight       	= getWeight(r.id);
-			var sattending     	= getAttending(r.id);
-
-			if(r.pstat === "I" || r.cstat === "I" ){
+			if(spstat === "I" || scstat === "I" ){
 				availableCount++;
 			}else{
 				satisfiedCount++;
 			}
 			var marker 		  = new google.maps.Marker({
-				id 					  : r.id,
-				lat           : r.lat,
-				lng           : r.lng,
-				name 				  : r.name,
-				address		 		: r.address,
-				phone	 				: r.phone,
-				type 		      : r.type,
-				pmax					: r.pmax,
-				pcand					: r.pcand,
-				pstat					: r.pstat,
-				cmax					: r.cmax,
-				ccand					: r.ccand,
-				cstat					: r.cstat,
+				id 					  : sid,
+				lat           : slat,
+				lng           : slng,
+				name 				  : sname,
+				address		 		: saddress,
+				phone	 				: sphone,
+				type 		      : stype,
+				pmax					: spmax,
+				pcand					: spcand,
+				pstat					: spstat,
+				cmax					: scmax,
+				ccand					: sccand,
+				cstat					: scstat,
 				position	 		: sposition,
 				rowid 			 	: i,
 				icon 					: image,
-				map 					: map,
+				map 					  : map,
 				weight        : sweight,
 				attending     : sattending
 			});
@@ -468,124 +497,19 @@ function createMarkersJson(d) {
 }
 
 
-
-// called from an address search
-function createMarkers(d) {
-	//console.log(d);
-	satisfiedCount=0;
-	availableCount=0;
-	var ulist =  "" ;
-	var ulistlength= "" ;
-	if( d.rows !== null && d.rows !== undefined ) {
-		ulist 		= d.rows;
-		ulistlength = d.rows.length;
-		for (var i = 0; i < ulistlength; i++) {
-			var sid 		        = ulist[i][0];
-			var slat			      = ulist[i][1];
-			var slng			      = ulist[i][2];
-			var	sname 				= ulist[i][3].toUpperCase();
-			var	saddress			= ulist[i][4];
-			var	sphone	 			= ulist[i][5];
-			var stype			  	= ulist[i][6];
-			// var pmax			  	= ulist[i][7];
-			// var pcand			  	= ulist[i][8];
-			// var pstat			  	= ulist[i][9];
-			// var cmax			  	= ulist[i][10];
-			// var ccand			  	= ulist[i][11];
-			// var cstat			  	= ulist[i][12];
-			var counts			  = getResults(sid);
-
-			var pmax			  	= counts[0];
-			var pcand			  	= counts[1];
-			var pstat			  	= counts[2];
-			var cmax			  	= counts[3];
-			var ccand			  	= counts[4];
-			var cstat			  	= counts[5];
-
-			var sposition	  	= new google.maps.LatLng(slat,slng);
-			var image       	= getImage(pstat, cstat);
-			var sweight       = getWeight(sid);
-			var attending     = getAttending(sid);
-			if(pstat === "I" || cstat === "I" ){
-				availableCount++;
-			}else{
-				satisfiedCount++;
-			}
-			var marker 		  = new google.maps.Marker({
-				id 					  : sid,
-				lat           : slat,
-				lng           : slng,
-				name 				  : sname,
-				address		 		: saddress,
-				phone	 				: sphone,
-				type 		      : stype,
-				pmax					: pmax,
-				pcand					: pcand,
-				pstat					: pstat,
-				cmax					: cmax,
-				ccand					: ccand,
-				cstat					: cstat,
-				position	 		: sposition,
-				rowid 			 	: i,
-				icon 					: image,
-				map 					: map,
-				weight        : sweight,
-				attending     : attending
-			});
-
-			if(marker.weight !== 0) {
-				heatMapData.push({location:marker.position, weight:marker.weight});
-			}
-
-			latlngbounds.extend(sposition);
-			var fn = markerClick(map, marker, infoWindowsas);
-			google.maps.event.addListener(marker, 'click', fn);
-			markersArray.push(marker);
-			infoWindowsas	= new google.maps.InfoWindow();
-
-		} // end loop
-
-		google.maps.event.addListener(infoWindowsas, 'closeclick', closeinfowindow );
-		createResultsList();
-
-	}else{  // nothing returned from query
-		// will happen if address loc is not within a boundary or bad query
-		results = "<span style='color:red;'>We're sorry, the search didn't turn up anything.</span>";
-		$("#resultList").html(results);
-		return;
-	}
-
-
-	//setMapZoom();
-
-	// if there is jsonp data then initialize the heat map but don't view it until button is clicked.
-	// map also displays circles based on signup numbers.
-	// if(isHeatMapData()) {
-	// 	heatmap = new google.maps.visualization.HeatmapLayer({
-	// 		data: heatMapData,
-	// 		dissipating: true,
-	// 		radius:40 //, don't display just yet
-	// 		//map: map
-	// 	});
-	// 	$("#btnHeatmap").removeClass("hidden");
-	// 	$("#btnSignups").removeClass("hidden");
-	// }else {
-	// 	$("#btnHeatmap").removeClass("hidden").addClass("hidden");
-	// 	$("#btnSignups").removeClass("hidden").addClass("hidden");
-	// }
-}
-
-function getResults(sid){
+      
+function getInfoFromID(sid){
 	var result = $.grep(studentCountArray, function(e){ return e.id == sid; });
 	if (result.length === 0) {
 	  return 0;
 	} else if (result.length === 1) {
-	  return [result[0].pmax, result[0].pcand,result[0].pstat,result[0].cmax,result[0].ccand,result[0].cstat];
+	  return [result[0].id, result[0].lat, result[0].lng, result[0].name, result[0].address, result[0].phone, result[0].type, result[0].pmax, result[0].pcand,result[0].pstat,result[0].cmax,result[0].ccand,result[0].cstat];
 	} else {
-		return [result[0].pmax, result[0].pcand,result[0].pstat,result[0].cmax,result[0].ccand,result[0].cstat];
-	}
+		return [result[0].id, result[0].lat, result[0].lng, result[0].name, result[0].address, result[0].phone, result[0].type, result[0].pmax, result[0].pcand,result[0].pstat,result[0].cmax,result[0].ccand,result[0].cstat];}
 }
-//voteCountArray.push({id:sid, type:mtype, name:mname, votes:mvotes  });
+
+
+
 function getVotes(sid){
 	var result = $.grep(voteCountArray, function(e){ return e.id == sid; });
 	if (result.length === 0) {
