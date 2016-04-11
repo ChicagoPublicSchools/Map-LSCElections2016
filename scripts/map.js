@@ -251,7 +251,7 @@ function initAutocomplete() {
 
 
 function searchInputField() {
-	
+
   //school names are uppercase
   var theInput = $.trim( $("#txtSearchAddress").val().toUpperCase() );
 
@@ -262,7 +262,7 @@ function searchInputField() {
     if ($.inArray(theInput, arrayforautocomplete) !== -1) {
         _trackClickEventWithGA("Search", "School Name LSC", theInput);
         schoolSearch(theInput)
-        
+
       } else { //  value is not in the array
 			//if(/^\d.*/.test(theInput)) {// - starts with a number
 				//addressSearch();
@@ -373,7 +373,7 @@ function createMarkersJson(d) {
 	//console.log(d);
 	satisfiedCount=0;
 	availableCount=0;
- 
+
 	if (d.kind === "fusiontables#sqlresponse") {//check for fusiondata from address lookup
 		var isfusion = true;
     var dlength = d.rows.length;
@@ -382,10 +382,10 @@ function createMarkersJson(d) {
     var dlength = d.length;
 	}
 
-	if( d !== null && d !== undefined ) {	
-  
+	if( d !== null && d !== undefined ) {
+
 		for (var i = 0; i < dlength; i++) {
-    
+
     if (isfusion) {
         // address search returns array of ids
         // info goes and gets data from jsonp created array.
@@ -403,7 +403,7 @@ function createMarkersJson(d) {
         var scmax			  	  = info[10];
         var sccand			  	= info[11];
         var scstat			  	= info[12];
-      
+
       }else{
         // other searches return array of data
 				var r=d[i];
@@ -420,9 +420,9 @@ function createMarkersJson(d) {
         var scmax			  	  = r.cmax;
         var sccand			  	= r.ccand;
         var scstat			  	= r.cstat;
-        
+
 			}
-      
+
 			var sposition	  		= new google.maps.LatLng(slat,slng);
 			var image       		= getImage(spstat, scstat);
 			var sweight       	= getWeight(sid);
@@ -497,7 +497,7 @@ function createMarkersJson(d) {
 }
 
 
-      
+
 function getInfoFromID(sid){
 	var result = $.grep(studentCountArray, function(e){ return e.id == sid; });
 	if (result.length === 0) {
@@ -572,8 +572,19 @@ function createResultsList() {
 	if (searchtype === "oneschool") {
 		var m="";
 		openInfoWindow(markersArray[0].id, markersArray[0].name, markersArray[0].address, markersArray[0].phone, markersArray[0].type, markersArray[0].lat, markersArray[0].lng, markersArray[0].weight, markersArray[0].attending, markersArray[0].pmax, markersArray[0].pcand, markersArray[0].pstat, markersArray[0].cmax, markersArray[0].ccand, markersArray[0].cstat);
-	}else{
+	}else	if (searchtype === "allschools") {
+		// fixes the inital search moving map down // needs work
+			map.setCenter(chicago);
+			map.setZoom(11);
+			if( $( window ).width() > 767 ) {
+				map.panBy(-calcPinLocation(), 0);
+			} else {
+				map.panBy(0 , -($( window ).height() / 2.5 )) ;
+			}
+
+		}else{
 		setMapZoom();
+
 	}
 }
 
@@ -626,31 +637,31 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 	}else{
 		contents +=	"<div style='color:#1E5F08;'>Community Candidates: <strong>" + ccand  + " of "+ cmax +"</strong></div>";
 	}
-//console.log(results[i].type +" "+ results[i].name +" "+ results[i].votes)
-contents +=	"<div id='divvotes'><table id='tblvotes' class='table table-striped table-condensed'><tbody><tr><th>Type</th><th>Name</th><th>Votes</th></tr>";
-	for (i in results) {
-    contents +=	"<tr><td>"+results[i].type+"</td><td>"+results[i].name+"</td><td>"+results[i].votes+"</td></tr>";		
-	}
+	//console.log(results[i].type +" "+ results[i].name +" "+ results[i].votes)
+	contents +=	"<div id='divvotes'><table id='tblvotes' class='table table-striped table-condensed'><tbody><tr><th>Type</th><th>Name</th><th>Votes</th></tr>";
+		for (i in results) {
+	    contents +=	"<tr><td>"+results[i].type+"</td><td>"+results[i].name+"</td><td>"+results[i].votes+"</td></tr>";
+		}
 
-contents +=	"</tbody></table></div>"
-	//
-	// if (pstat == "I" ) {
-	// 	contents +=	"<div style='color:#B20000;'>Parent Candidates Needed: <strong>" + parentNeed + "</strong></div>"
-	// }else{
-	// 	contents +=	"<div style='color:#1E5F08;'>Parent Candidates: <strong>" + pcand + "</strong></div>"
-	// }
-	// if (cstat == "I" ) {
-	// 	contents +=	"<div style='color:#B20000;'>Community Candidates Needed: <strong>" + communityNeed + "</strong></div>"
-	// }else{
-	// 	contents +=	"<div style='color:#1E5F08;'>Community Candidates: <strong>" + ccand + "</strong></div>";
-	// }
+	contents +=	"</tbody></table></div>"
+		//
+		// if (pstat == "I" ) {
+		// 	contents +=	"<div style='color:#B20000;'>Parent Candidates Needed: <strong>" + parentNeed + "</strong></div>"
+		// }else{
+		// 	contents +=	"<div style='color:#1E5F08;'>Parent Candidates: <strong>" + pcand + "</strong></div>"
+		// }
+		// if (cstat == "I" ) {
+		// 	contents +=	"<div style='color:#B20000;'>Community Candidates Needed: <strong>" + communityNeed + "</strong></div>"
+		// }else{
+		// 	contents +=	"<div style='color:#1E5F08;'>Community Candidates: <strong>" + ccand + "</strong></div>";
+		// }
 
-	// if(isHeatMapData()) {
-	//   if(weight>0) {
-	//     contents +=	"<p><span style='font-weight:bold'>Signups: </span>" + getWeight(id) + "<br />";
-	//     contents +=	"<span style='font-weight:bold'>Attending: </span>" + getAttending(id) + "</p>";
-	//   }
-	// }
+		// if(isHeatMapData()) {
+		//   if(weight>0) {
+		//     contents +=	"<p><span style='font-weight:bold'>Signups: </span>" + getWeight(id) + "<br />";
+		//     contents +=	"<span style='font-weight:bold'>Attending: </span>" + getAttending(id) + "</p>";
+		//   }
+		// }
 
 	contents += "<div class='directionsdiv'>" ;
 	var startaddr = "";
@@ -786,7 +797,7 @@ function isMobile() {
 //centers the markers on the middle bottom of the screen on mobile displays
 function positionMarkersOnMap() {
 	if( $( window ).width() > 767 ) {
-		map.panBy(-calcPinLocation(), 0);
+		map.panBy(-calcPinLocation(), -($( window ).height() / 2.5 ));
 	} else {
 		map.panBy(0 , -($( window ).height() / 2.5 )) ;
 	}
