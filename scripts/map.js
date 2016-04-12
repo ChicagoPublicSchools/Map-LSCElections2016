@@ -643,7 +643,7 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 		contents +=	"</tbody></table></div>";
 
 	} else {
-			contents +=	"<div><h5>This school has an appointed LSC.</h5></div>";
+			contents +=	"<div><h5>This school will not have an election.</h5></div>";
 	}
 
 
