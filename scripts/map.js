@@ -143,7 +143,7 @@ function getCount(){
 	searchtype = "allschools";
 	$.ajax({
 		type:       "GET" ,
-		url:        "https://secure.cps.edu/json/lscvacancies2016?callback=?",
+		url: 				"https://secure.cps.edu/json/lscvacancies2016?callback=?",
 		dataType:   "jsonp",
 		error:      function (jqXHR, exception) {
 			// net::ERR_NAME_NOT_RESOLVED
@@ -168,7 +168,8 @@ function getCount(){
 											var cmmax        =  (d[i].COMMUNITY_MAX);
 											var cmcand       =  (d[i].COMMUNITY_CAND);
 											var cmstat       =  (d[i].COMMUNITY_STAT);
-											studentCountArray.push({id:sid, lat:slat, lng:slng, name:sname, address:saddress , phone:sphone, type:stype, pmax:ptmax, pcand:ptcand, pstat:ptstat, cmax:cmmax , ccand:cmcand, cstat:cmstat  });
+											var sappointedlsc =  (d[i].AppointedLSC);
+											studentCountArray.push({id:sid, lat:slat, lng:slng, name:sname, address:saddress , phone:sphone, type:stype, pmax:ptmax, pcand:ptcand, pstat:ptstat, cmax:cmmax , ccand:cmcand, cstat:cmstat, appointedlsc:sappointedlsc  });
 											arrayforautocomplete.push(sname);
 	                 });
 
@@ -211,7 +212,6 @@ function getVoteCount(){
 }
 
 
-// initialize Autocomplete
 function initAutocomplete() {
   $( "#txtSearchAddress" ).autocomplete({
     appendTo: "#autocomplete-input-group",
@@ -278,11 +278,10 @@ function searchInputField() {
 
 function schoolSearch(theInput) {
   searchtype = "oneschool";
-  var query = "SELECT ID, Lat, Long, Name, Address, Phone, Type "+
+	var query = "SELECT ID "+
                     " FROM " + fusionTableId + " WHERE Name = '" + theInput + "'";
   encodeQuery(query, createMarkersJson);
 }
-
 
 // not used
 // called from initialize script "all" displays all SchoolTypes
@@ -302,7 +301,6 @@ function mapQueryAll(st) {
 	// }
 
 }
-
 
 // displays schools whose boundaries encompass the address loc
 function addressSearch() {
@@ -344,9 +342,8 @@ function addressSearch() {
 			}
 		});
 	} else {//didn't enter an address
-	alert("Please enter an address.");
-}
-
+		alert("Please enter an address.");
+	}
 }
 
 // called from the address search
@@ -366,8 +363,6 @@ function addressQuery(d) {
 	 encodeQuery(query, createMarkersJson);
 }
 
-
-// called from an all search
 // creates markers and infowindow data
 function createMarkersJson(d) {
 	//console.log(d);
@@ -403,6 +398,7 @@ function createMarkersJson(d) {
         var scmax			  	  = info[10];
         var sccand			  	= info[11];
         var scstat			  	= info[12];
+				var sappointedlsc		= info[13];
 
       }else{
         // other searches return array of data
@@ -420,6 +416,7 @@ function createMarkersJson(d) {
         var scmax			  	  = r.cmax;
         var sccand			  	= r.ccand;
         var scstat			  	= r.cstat;
+				var sappointedlsc  	= r.appointedlsc;
 
 			}
 
@@ -450,21 +447,22 @@ function createMarkersJson(d) {
 				position	 		: sposition,
 				rowid 			 	: i,
 				icon 					: image,
-				map 					  : map,
+				map 					: map,
 				weight        : sweight,
-				attending     : sattending
+				attending     : sattending,
+				appointedlsc	: sappointedlsc
 			});
 
-			if(marker.weight !== 0) {
-				heatMapData.push({location:marker.position, weight:marker.weight});
-			}
+			// if(marker.weight !== 0) {
+			// 	heatMapData.push({location:marker.position, weight:marker.weight});
+			// }
+
 
 			latlngbounds.extend(sposition);
 			var fn = markerClick(map, marker, infoWindowsas);
 			google.maps.event.addListener(marker, 'click', fn);
 			markersArray.push(marker);
 			infoWindowsas	= new google.maps.InfoWindow();
-
 		} // end loop
 
 		google.maps.event.addListener(infoWindowsas, 'closeclick', closeinfowindow );
@@ -496,19 +494,15 @@ function createMarkersJson(d) {
 	// }
 }
 
-
-
 function getInfoFromID(sid){
 	var result = $.grep(studentCountArray, function(e){ return e.id == sid; });
 	if (result.length === 0) {
 	  return 0;
 	} else if (result.length === 1) {
-	  return [result[0].id, result[0].lat, result[0].lng, result[0].name, result[0].address, result[0].phone, result[0].type, result[0].pmax, result[0].pcand,result[0].pstat,result[0].cmax,result[0].ccand,result[0].cstat];
+	  return [result[0].id, result[0].lat, result[0].lng, result[0].name, result[0].address, result[0].phone, result[0].type, result[0].pmax, result[0].pcand,result[0].pstat,result[0].cmax,result[0].ccand,result[0].cstat,result[0].appointedlsc ];
 	} else {
-		return [result[0].id, result[0].lat, result[0].lng, result[0].name, result[0].address, result[0].phone, result[0].type, result[0].pmax, result[0].pcand,result[0].pstat,result[0].cmax,result[0].ccand,result[0].cstat];}
+		return [result[0].id, result[0].lat, result[0].lng, result[0].name, result[0].address, result[0].phone, result[0].type, result[0].pmax, result[0].pcand,result[0].pstat,result[0].cmax,result[0].ccand,result[0].cstat,result[0].appointedlsc ];}
 }
-
-
 
 function getVotes(sid){
 	var result = $.grep(voteCountArray, function(e){ return e.id == sid; });
@@ -528,7 +522,6 @@ function closeinfowindow() {
 }
 
 function createResultsList() {
-	//console.log("createResultsList: "+markersArray.length);
 	var results = "";
 	if (markersArray) {
 		// sort alphabetically by name
@@ -555,7 +548,8 @@ function createResultsList() {
 			markersArray[i].pstat+"&quot;,&quot;"+
 			markersArray[i].cmax+"&quot;,&quot;"+
 			markersArray[i].ccand+"&quot;,&quot;"+
-			markersArray[i].cstat+"&quot;);  '>" +
+			markersArray[i].cstat+"&quot;,&quot;"+
+			markersArray[i].appointedlsc+"&quot;);  '>" +
 			"<img src='" +markersArray[i].icon+ "' />" ;
 			if (markersArray[i].weight === 0) {
 				results +="<span style='color:"+linkcolor+ "; ' >"+markersArray[i].name+"</span>";
@@ -571,7 +565,7 @@ function createResultsList() {
 
 	if (searchtype === "oneschool") {
 		var m="";
-		openInfoWindow(markersArray[0].id, markersArray[0].name, markersArray[0].address, markersArray[0].phone, markersArray[0].type, markersArray[0].lat, markersArray[0].lng, markersArray[0].weight, markersArray[0].attending, markersArray[0].pmax, markersArray[0].pcand, markersArray[0].pstat, markersArray[0].cmax, markersArray[0].ccand, markersArray[0].cstat);
+		openInfoWindow(markersArray[0].id, markersArray[0].name, markersArray[0].address, markersArray[0].phone, markersArray[0].type, markersArray[0].lat, markersArray[0].lng, markersArray[0].weight, markersArray[0].attending, markersArray[0].pmax, markersArray[0].pcand, markersArray[0].pstat, markersArray[0].cmax, markersArray[0].ccand, markersArray[0].cstat, markersArray[0].appointedlsc);
 	}else	if (searchtype === "allschools") {
 		// fixes the inital search moving map down // needs work
 			map.setCenter(chicago);
@@ -587,7 +581,6 @@ function createResultsList() {
 
 	}
 }
-
 
 function displayLSCBoundary(id) {
 	//show the boundaries of the school
@@ -613,48 +606,46 @@ function displayLSCBoundary(id) {
 
 // populates the info window
 // called from markerclick and resultslist click
-function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attending, pmax, pcand, pstat, cmax, ccand, cstat) {
+function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attending, pmax, pcand, pstat, cmax, ccand, cstat, appointedlsc) {
 	var sposition	  	= new google.maps.LatLng(lat,lng);
 	//var headcolor   = getLinkColor(pstat, cstat);
 	var typeText   		= getType(type);
 	var parentNeed 		= (pmax-pcand);
 	var communityNeed = (cmax-ccand);
 	var results			  = getVotes(id);
-
+	if(results){
+		results = results.sort(function (a, b) {
+			return a.type.localeCompare( b.type );
+		});
+	}
 
 	var contents = "<div class='googft-info-window'>" +
 	"<h4>" + name + "</h4>" +
 	"<p>" + "<span>" + typeText + "</span><br />" + address +
 	"<br /><a style='color:#333;' href='tel:"+phone+"'>" + phone + "</a></p>" ;
 
-	if (pstat == "I" ) {
-		contents +=	"<div style='color:#B20000;'>Parent Candidates: <strong>" + pcand  + " of "+ pmax +"</strong></div>";
-	}else{
-		contents +=	"<div style='color:#1E5F08;'>Parent Candidates: <strong>" + pcand  + " of "+ pmax +"</strong></div>";
-	}
-	if (cstat == "I" ) {
-		contents +=	"<div style='color:#B20000;'>Community Candidates: <strong>" + ccand  + " of "+ cmax +"</strong></div>";
-	}else{
-		contents +=	"<div style='color:#1E5F08;'>Community Candidates: <strong>" + ccand  + " of "+ cmax +"</strong></div>";
-	}
-	//console.log(results[i].type +" "+ results[i].name +" "+ results[i].votes)
-	contents +=	"<div id='divvotes'><table id='tblvotes' class='table table-striped table-condensed'><tbody><tr><th>Type</th><th>Name</th><th>Votes</th></tr>";
-		for (i in results) {
-	    contents +=	"<tr><td>"+results[i].type+"</td><td>"+results[i].name+"</td><td>"+results[i].votes+"</td></tr>";
+	if (appointedlsc !== "Y" ) {
+		if (pstat == "I" ) {
+			contents +=	"<div style='color:#B20000;'>Parent Candidates: <strong>" + pcand  + " of "+ pmax +"</strong></div>";
+		}else{
+			contents +=	"<div style='color:#1E5F08;'>Parent Candidates: <strong>" + pcand  + " of "+ pmax +"</strong></div>";
+		}
+		if (cstat == "I" ) {
+			contents +=	"<div style='color:#B20000;'>Community Candidates: <strong>" + ccand  + " of "+ cmax +"</strong></div>";
+		}else{
+			contents +=	"<div style='color:#1E5F08;'>Community Candidates: <strong>" + ccand  + " of "+ cmax +"</strong></div>";
 		}
 
-	contents +=	"</tbody></table></div>"
-		//
-		// if (pstat == "I" ) {
-		// 	contents +=	"<div style='color:#B20000;'>Parent Candidates Needed: <strong>" + parentNeed + "</strong></div>"
-		// }else{
-		// 	contents +=	"<div style='color:#1E5F08;'>Parent Candidates: <strong>" + pcand + "</strong></div>"
-		// }
-		// if (cstat == "I" ) {
-		// 	contents +=	"<div style='color:#B20000;'>Community Candidates Needed: <strong>" + communityNeed + "</strong></div>"
-		// }else{
-		// 	contents +=	"<div style='color:#1E5F08;'>Community Candidates: <strong>" + ccand + "</strong></div>";
-		// }
+		contents +=	"<div id='divvotes'><table id='tblvotes' class='table table-striped table-condensed'><tbody><tr><th>Type</th><th>Name</th><th>Votes</th></tr>";
+			for (i in results) {
+		    contents +=	"<tr><td>"+results[i].type+"</td><td>"+results[i].name+"</td><td>"+results[i].votes+"</td></tr>";
+			}
+		contents +=	"</tbody></table></div>";
+
+	} else {
+			contents +=	"<div><h5>This school has an appointed LSC.</h5></div>";
+	}
+
 
 		// if(isHeatMapData()) {
 		//   if(weight>0) {
@@ -697,7 +688,7 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 function markerClick(map, m, ifw) {
 	return function() {
 		_trackClickEventWithGA("Click", "Marker on Map LSC", m.name);
-		openInfoWindow(m.id, m.name, m.address, m.phone, m.type, m.lat, m.lng, m.weight, m.attending, m.pmax, m.pcand, m.pstat, m.cmax, m.ccand, m.cstat);
+		openInfoWindow(m.id, m.name, m.address, m.phone, m.type, m.lat, m.lng, m.weight, m.attending, m.pmax, m.pcand, m.pstat, m.cmax, m.ccand, m.cstat, m.appointedlsc);
 	};
 }
 
@@ -796,7 +787,7 @@ function isMobile() {
 //centers the markers on the right side of the viewport on larger displays
 //centers the markers on the middle bottom of the screen on mobile displays
 function positionMarkersOnMap() {
-	if( $( window ).width() > 767 ) {
+	if(!isMobile()) {
 		map.panBy(-calcPinLocation(), -($( window ).height() / 2.5 ));
 	} else {
 		map.panBy(0 , -($( window ).height() / 2.5 )) ;
@@ -889,6 +880,7 @@ function clearSearch() {
 	latlngbounds = new google.maps.LatLngBounds(null);
 	searchtype = null;
 	searchPolyAttendance = null;
+	addrMarker = null
 }
 
 // lists the markers from the map
