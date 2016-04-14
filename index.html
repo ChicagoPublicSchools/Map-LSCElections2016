@@ -41,7 +41,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBgH1Z_xKIjf1FVwvexUWfW-2FEhUjvF8&libraries=visualization"></script>
     <script src="http://www.google.com/jsapi"></script>
     <script src="scripts/jquery-1.11.1.min.js"></script>
-    <script src="scripts/map.js?v=1.3" ></script>
+    <script src="scripts/map.js?v=1.4" ></script>
     <script src="scripts/bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="scripts/analytics_lib.js" ></script>
     <!--only for autocomplete and slide -->
@@ -49,11 +49,11 @@
     <link href="scripts/jqueryui/jquery-ui.min.css" rel="stylesheet">
     <!-- hopscotch feature tour -->
     <script src="scripts/hopscotch-dist/js/hopscotch.min.js"></script>
-    <script src="scripts/maptour1.js?v=1.3"></script>
+    <script src="scripts/maptour1.js?v=1.4"></script>
     <link rel="stylesheet" href="scripts/hopscotch-dist/css/hopscotch.min.css" />
     <!-- css -->
     <link href="scripts/bootstrap-3.3.4-dist/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" />
-    <link href="styles/map.css?v=1.3" media="all" rel="stylesheet" type="text/css" />
+    <link href="styles/map.css?v=1.4" media="all" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript">
 
@@ -70,9 +70,10 @@
         });
 
         // init tooltips
-        // $(function () {
-        //   $('[data-toggle="tooltip"]').tooltip({placement : 'top'});
-        // })
+        $('body').tooltip({
+            selector: '.link-get-directions',
+            placement : 'top'
+        });
 
         //if (!isMobile()) {
            //hopscotch.startTour(maptourlg, 0);

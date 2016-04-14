@@ -618,10 +618,17 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 			return a.type.localeCompare( b.type );
 		});
 	}
+	var startaddr = "";
+	if (addrMarker !== null) {
+		startaddr = "saddr="+ geoaddress + "&";
+	}
+	var destaddr = "daddr="+address;
+
+	var dirlink =	" <a class='link-get-directions' data-toggle='tooltip' style='color:#333;' title='Directions' href='http://maps.google.com/maps?"+ startaddr + destaddr + "' target='_blank' ><span style='margin-left:5px;'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span></span></a>";
 
 	var contents = "<div class='googft-info-window'>" +
 	"<h4>" + name + "</h4>" +
-	"<p>" + "<span>" + typeText + "</span><br />" + address +
+	"<p>" + "<span>" + typeText + "</span><br />" + address + dirlink +
 	"<br /><a style='color:#333;' href='tel:"+phone+"'>" + phone + "</a></p>" ;
 
 	if (appointedlsc !== "Y" ) {
@@ -636,11 +643,12 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 			contents +=	"<div style='color:#1E5F08;'>Community Candidates: <strong>" + ccand  + " of "+ cmax +"</strong></div>";
 		}
 
-		contents +=	"<div id='divvotes'><table id='tblvotes' class='table table-striped table-condensed'><tbody><tr><th>Type</th><th>Name</th><th>Votes</th></tr>";
+		contents +=	"<div id='divvotes'><table id='tblvotes' class='table table-striped table-condensed'><tbody><tr><th>Type</th><th>Name</th><th>Votes*</th></tr>";
 			for (i in results) {
 		    contents +=	"<tr><td>"+results[i].type+"</td><td>"+results[i].name+"</td><td>"+results[i].votes+"</td></tr>";
 			}
 		contents +=	"</tbody></table></div>";
+		contents +=	"<div style='margin-top:10px;'><strong>* Unofficial Results</strong></div>";
 
 	} else {
 			contents +=	"<div><h5>This school will not have an election.</h5></div>";
@@ -654,16 +662,7 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 		//   }
 		// }
 
-	contents += "<div class='directionsdiv'>" ;
-	var startaddr = "";
-	if (addrMarker !== null) {
-		startaddr = "saddr="+ geoaddress + "&";
-	}
-	var destaddr = "daddr="+address;//.replace(" ", "+");
-
-	contents +=	"<a class='link-get-directions'  style='color:#333;' href='http://maps.google.com/maps?";
-	contents += startaddr + destaddr + "' target='_blank' >Get directions</a><br />"	;
-	contents +=	"</div></div>";
+	
 	displayLSCBoundary(id);
 	hopscotch.endTour();
 
