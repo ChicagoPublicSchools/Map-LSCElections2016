@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+    <title>LSC Elections 2016 Map</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,  user-scalable=no">
+    <meta http-equiv="cache-control" content="max-age=0">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 11:00:00 GMT">
+    <meta http-equiv="pragma" content="no-cache">
+
+    <!-- Search engines -->
+    <meta name="description" content="Chicago Public Schools Local School Council Elections Map">
+    <!-- Google Plus -->
+    <!-- Update your html tag to include the itemscope and itemtype attributes. -->
+    <!-- html itemscope itemtype="http://schema.org/{CONTENT_TYPE}" -->
+    <meta itemprop="name" content="LSC Elections 2016 Map">
+    <meta itemprop="description" content="Chicago Public Schools Local School Council Elections Map">
+    <meta itemprop="image" content="http://cps.edu/ScriptLibrary/Map-LSCElections2016/images/lscelectionsmetaimage.jpg">
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@ChiPubSchools">
+    <meta name="twitter:title" content="LSC Elections 2016 Map">
+    <meta name="twitter:description" content="Chicago Public Schools Local School Council Elections Map">
+    <meta name="twitter:creator" content="@ChiPubSchools">
+    <meta name="twitter:image:src" content="http://cps.edu/ScriptLibrary/Map-LSCElections2016/images/lscelectionsmetaimage.jpg">
+    <meta name="twitter:player" content="">
+    <!-- Open Graph General (Facebook & Pinterest) -->
+    <meta property="og:url" content="http://cps.edu/ScriptLibrary/Map-LSCElections2016/index.html">
+    <meta property="og:title" content="LSC Elections 2016 Map">
+    <meta property="og:description" content="Chicago Public Schools Local School Council Elections Map">
+    <meta property="og:site_name" content="LSC Elections 2016 Map">
+    <meta property="og:image" content="http://cps.edu/ScriptLibrary/Map-LSCElections2016/images/lscelectionsmetaimage.jpg">
+    <meta property="og:type" content="article">
+
+    <link rel="shortcut icon" href="images/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700" rel="stylesheet" type="text/css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBgH1Z_xKIjf1FVwvexUWfW-2FEhUjvF8&libraries=visualization"></script>
+    <script src="http://www.google.com/jsapi"></script>
+    <script src="scripts/jquery-1.11.1.min.js"></script>
+    <script src="scripts/map.js?v=1.3" ></script>
+    <script src="scripts/bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="scripts/analytics_lib.js" ></script>
+    <!--only for autocomplete and slide -->
+    <script src="scripts/jqueryui/jquery-ui.min.js"></script>
+    <link href="scripts/jqueryui/jquery-ui.min.css" rel="stylesheet">
+    <!-- hopscotch feature tour -->
+    <script src="scripts/hopscotch-dist/js/hopscotch.min.js"></script>
+    <script src="scripts/maptour1.js?v=1.3"></script>
+    <link rel="stylesheet" href="scripts/hopscotch-dist/css/hopscotch.min.css" />
+    <!-- css -->
+    <link href="scripts/bootstrap-3.3.4-dist/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="styles/map.css?v=1.3" media="all" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript">
+
+	$(document).ready(function () {
+
+			$(document).on("click", "a.link-get-directions", function() {
+				var $a = jQuery(this);
+				var href = $a.attr("href");
+				_trackClickEventWithGA("InfoWindow", "Get Directions to this school LSC", href);
+				});
+
+        $("#txtSearchAddress").on("focus", function () {
+            hopscotch.endTour();
+        });
+
+        // init tooltips
+        // $(function () {
+        //   $('[data-toggle="tooltip"]').tooltip({placement : 'top'});
+        // })
+
+        //if (!isMobile()) {
+           //hopscotch.startTour(maptourlg, 0);
+         //}
+         initializeMap();
+	});
+    </script>
+   </head>
+
+    <body>
+      <div id="search" class="tinted">
+
+        <div id="headingcontainer" class="clearfix">
+
+          <h1 id="headingtitle">LSC Elections 2016</h1>
+          <div id="legendlist" class="clearfix">
+          <div class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+             <h4>LSC Elections are coming soon!</h4>
+               <p>
+                 <strong>Elementary Schools:</strong> Wednesday, April 13th, 2016 (6am - 7pm)<br />
+                 <strong>High Schools:</strong> Thursday, April 14th, 2016 (6am - 7pm)
+              </p>
+              <p>Voting in the LSC elections is easy - it can be done while you're already at your school for report card pick up or on another quick visit during the voting window.</p>
+              <p><button type="button" class="btn btn-xs btn-primary visible-xs-inline" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">Close</span></button></p>
+
+          </div>
+
+          </div>
+
+        </div>
+
+          <div>
+
+              <div id="autocomplete-input-group" class="input-group">
+                <input id="txtSearchAddress" type="text" class="form-control" placeholder="School or Home Address">
+                <span class="input-group-btn">
+                  <button id="btnSearch" class="btn btn-primary" onClick="searchInputField(); return false;"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                </span>
+                <span class="input-group-btn">
+                  <button id="btnReset" class="btn btn-danger" onClick="resetmap();"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+                </span>
+              </div>
+
+          </div>
+
+
+          <div id="resultListContainer">
+            <div id="resultList"></div>
+          </div>
+
+
+      </div>
+
+
+      <div id="map_canvas"> </div>
+
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBgH1Z_xKIjf1FVwvexUWfW-2FEhUjvF8&libraries=visualization&callback=initializeMap"
+        async defer></script> -->
+
+        <script>
+          $("#txtSearchAddress").keydown(function(e) {
+            if(e.keyCode == 13) {
+              e.preventDefault();
+              searchInputField();
+              //$(this).autocomplete('close');
+              $(this).blur();
+              }
+          });
+        </script>
+</body>
+</html>

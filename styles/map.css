@@ -1,0 +1,239 @@
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+	font-family: 'Roboto Condensed', sans-serif;
+}
+
+:focus, :active, a:focus, a:active, .btn:focus, .btn:active { outline: 0; text-decoration: none; }
+
+#search {
+	position: absolute;
+	top:0;
+	width: 55%;
+	max-width: 767px;
+	margin:0;
+	/*background-color: #274976;*/
+	padding: 10px 20px;
+	z-index: 1;
+}
+
+#resultListContainer {
+	/*background:rgba(255,255,255,0.7) ; light*/
+	margin-top: 10px;
+	max-height:170px;
+	height:auto;
+	overflow-y:auto ;
+	overflow-x:hidden;
+	-webkit-overflow-scrolling: touch;
+}
+
+#headingcontainer {
+		margin-bottom: 10px;
+}
+
+#locationcount {
+	/*background-color: #1F79C6;*/
+	background:rgba(31,121,198,0.15);
+	padding:4px 0 ;
+}
+
+#locationcount img {
+	width: 15px;
+}
+
+
+#locationcount span {
+	margin-left:10px;
+	color:#1F79C6;
+	line-height: 20px;
+}
+
+.resultsrow {
+	cursor:pointer;
+	padding-top:5px;
+  padding-bottom:4px;
+  /*border-bottom: solid 1px #efefef;*/
+  line-height:1em;
+}
+
+.resultsrow:hover {
+	/*background-color: #ddd;
+	background:rgba(0,0,0,0.15)*/
+	background:rgba(31,121,198,0.08);
+}
+
+.resultsrow img {
+	width:15px;
+	height:16px;
+	margin-right:5px;
+	margin-left:5px;
+}
+
+#map_canvas {
+	position: absolute;;
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+}
+
+.tinted{
+	/*background:rgba(0,0,0,0.2) ; dark*/
+	background:rgba(255,255,255,0.9) ; /*light*/
+}
+
+/* footer */
+.footer {
+	bottom:0;
+	width:100%;
+	height:50px;
+	color: #77787b;
+	font-size: 12px;
+	padding:10px;
+	background-color:#ddd;
+}
+
+#txtSearchAddress{
+	background: transparent;
+	font-size: 1.1em;
+}
+
+#legendlist{
+	/*float:left;*/
+	/*text-align:left;*/
+	margin-top:5px;
+
+}
+
+#legendlist a {
+	/*float:left;*/
+	text-align:left;
+	font-size:.9em;
+	text-decoration: none;
+	/*margin:0 5px;*/
+	/*min-width: 50px;*/
+	/*display: inline-block;*/
+}
+
+.legendtooltip img{
+	width: auto;
+}
+
+.alert {
+    margin-bottom: 0px;
+}
+
+#headingtitle {
+	color: #1F79C6;
+	text-shadow: 2px 2px 4px rgba(150, 150, 150, .7);
+	margin-top:0;
+	margin-bottom:5px;
+	font-weight: normal;
+	width:100%;
+	/*float:left;*/
+}
+
+
+#input-schoolname{
+	width: 250px;
+	min-width: 250px;
+	background: transparent;
+}
+
+/*#map_canvas label {
+	width: auto;
+	display:inline;
+}*/
+
+/*#ddSchoolName {
+	background: transparent;
+}*/
+
+.googft-info-window h4 {
+	margin:0;
+}
+
+.googft-info-window div.regdiv {
+	padding-top:5px;
+	padding-bottom:15px;
+	margin-bottom:10px;
+}
+
+
+.directionsdiv{
+	margin-top:10px;
+}
+
+a.link-get-directions {
+	font-weight: bold;
+}
+
+/*override hopscotch for bigger close x */
+div.hopscotch-bubble .hopscotch-bubble-close { width:18px;}
+
+#tblvotes  {
+  margin-top:10px;
+ }
+#tblvotes td {
+  padding-top:2px;
+  padding-bottom:1px;
+}
+#divvotes{
+  max-height: 200px;
+  overflow-y: auto ;
+	overflow-x: hidden ;
+}
+
+.ui-autocomplete {
+	max-height: 300px ;
+	overflow-y: auto ;
+	overflow-x: hidden ;
+}
+
+
+.blue {color: #274976;}
+.green {color: #060;}
+.red {color: #d73e3e;}
+.orange {color: #dd8500;}
+.purple {color: #606;}
+.teal {color: #007575;}
+
+.blue:hover 	{color: #274976; text-shadow: 1px 1px 2px rgba(31,121,198,0.5); }
+.green:hover 	{color: #006600; text-shadow: 1px 1px 2px rgba(31,121,198,0.5);}
+.red:hover 		{color: #d73e3e; text-shadow: 1px 1px 2px rgba(31,121,198,0.5);}
+.orange:hover {color: #dd8500; text-shadow: 1px 1px 2px rgba(31,121,198,0.5);}
+.purple:hover {color: #660066; text-shadow: 1px 1px 2px rgba(31,121,198,0.5);}
+.teal:hover 	{color: #007575; text-shadow: 1px 1px 2px rgba(31,121,198,0.5);}
+
+
+
+/* mobile screen ////////////////////////////////////////////////////////*/
+/*@media (min-width: 993px) {
+}
+
+@media (min-width: 1200px) {
+}*/
+
+@media (max-width: 767px) {
+	#search        				{ width:100%; left:0;  }
+	#resultListContainer 	{	max-height:80px; }
+	#txtSearchAddress			{	font-size: .9em; }
+	.legendtooltip img		{	width: 15px; }
+	/*#input-schoolname			{ width: 100%; }*/
+
+	}
+	@media (max-width: 420px) {
+
+		#headingtitle 				{ font-size: 20px;
+		 												margin-bottom: 0px;}
+		#locationcount span 	{ margin-left:2px; }
+      #divvotes           { max-height: 100px;}
+		}
+
+
+
+/* mobile screen ////////////////////////////////////////////////////////*/
