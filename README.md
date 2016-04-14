@@ -12,7 +12,7 @@
 
 * Version 2016
  
-##Dependencies
+###Dependencies
  * [Google Fusion Tables] (https://support.google.com/fusiontables/answer/184641)
  * [Google Maps] (https://developers.google.com/maps/documentation/javascript/)
  * [jQuery] (http://jquery.com/)
