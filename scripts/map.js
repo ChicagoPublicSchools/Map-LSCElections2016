@@ -880,7 +880,7 @@ function clearSearch() {
 	latlngbounds = new google.maps.LatLngBounds(null);
 	searchtype = null;
 	searchPolyAttendance = null;
-	addrMarker = null
+	addrMarker = null;
 }
 
 // lists the markers from the map
