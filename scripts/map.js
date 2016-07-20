@@ -1,3 +1,4 @@
+
 //  LSC Vacancies Map (Community and Parent vacancies)
 
 //	web services
@@ -618,12 +619,6 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 			return a.type.localeCompare( b.type );
 		});
 	}
-<<<<<<< HEAD
-
-	var contents = "<div class='googft-info-window'>" +
-	"<h4>" + name + "</h4>" +
-	"<p>" + "<span>" + typeText + "</span><br />" + address +
-=======
 	var startaddr = "";
 	if (addrMarker !== null) {
 		startaddr = "saddr="+ geoaddress + "&";
@@ -635,7 +630,6 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 	var contents = "<div class='googft-info-window'>" +
 	"<h4>" + name + "</h4>" +
 	"<p>" + "<span>" + typeText + "</span><br />" + address + dirlink +
->>>>>>> e39f00813d424bacff111376cc858875e2ece0a1
 	"<br /><a style='color:#333;' href='tel:"+phone+"'>" + phone + "</a></p>" ;
 
 	if (appointedlsc !== "Y" ) {
@@ -650,19 +644,12 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 			contents +=	"<div style='color:#1E5F08;'>Community Candidates: <strong>" + ccand  + " of "+ cmax +"</strong></div>";
 		}
 
-<<<<<<< HEAD
-		contents +=	"<div id='divvotes'><table id='tblvotes' class='table table-striped table-condensed'><tbody><tr><th>Type</th><th>Name</th><th>Votes</th></tr>";
-=======
 		contents +=	"<div id='divvotes'><table id='tblvotes' class='table table-striped table-condensed'><tbody><tr><th>Type</th><th>Name</th><th>Votes*</th></tr>";
->>>>>>> e39f00813d424bacff111376cc858875e2ece0a1
 			for (i in results) {
 		    contents +=	"<tr><td>"+results[i].type+"</td><td>"+results[i].name+"</td><td>"+results[i].votes+"</td></tr>";
 			}
 		contents +=	"</tbody></table></div>";
-<<<<<<< HEAD
-=======
 		contents +=	"<div style='margin-top:10px;'><strong>* Unofficial Results</strong></div>";
->>>>>>> e39f00813d424bacff111376cc858875e2ece0a1
 
 	} else {
 			contents +=	"<div><h5>This school will not have an election.</h5></div>";
@@ -676,20 +663,7 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 		//   }
 		// }
 
-<<<<<<< HEAD
-	contents += "<div class='directionsdiv'>" ;
-	var startaddr = "";
-	if (addrMarker !== null) {
-		startaddr = "saddr="+ geoaddress + "&";
-	}
-	var destaddr = "daddr="+address;//.replace(" ", "+");
-
-	contents +=	"<a class='link-get-directions'  style='color:#333;' href='http://maps.google.com/maps?";
-	contents += startaddr + destaddr + "' target='_blank' >Get directions</a><br />"	;
-	contents +=	"</div></div>";
-=======
 	
->>>>>>> e39f00813d424bacff111376cc858875e2ece0a1
 	displayLSCBoundary(id);
 	hopscotch.endTour();
 
@@ -906,11 +880,7 @@ function clearSearch() {
 	latlngbounds = new google.maps.LatLngBounds(null);
 	searchtype = null;
 	searchPolyAttendance = null;
-<<<<<<< HEAD
-	addrMarker = null;
-=======
 	addrMarker = null
->>>>>>> e39f00813d424bacff111376cc858875e2ece0a1
 }
 
 // lists the markers from the map
