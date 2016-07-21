@@ -144,7 +144,9 @@ function getCount(){
 	searchtype = "allschools";
 	$.ajax({
 		type:       "GET" ,
-		url: 				"https://secure.cps.edu/json/lscvacancies2016?callback=?",
+		//url: 				"https://secure.cps.edu/json/lscvacancies2016?callback=?",
+			url: 				"https://secure.cps.edu/json/lsc/getlscvacancies?callback=?",
+
 		dataType:   "jsonp",
 		error:      function (jqXHR, exception) {
 			// net::ERR_NAME_NOT_RESOLVED
@@ -188,7 +190,7 @@ function getVoteCount(){
 	searchtype = "allschools";
 	$.ajax({
 		type:       "GET" ,
-		url:        "https://secure.cps.edu/json/lscvacancies2016/GetCandidateVoteTotal?callback=?",
+		url:        "https://secure.cps.edu/json/lsc/GetCandidateVoteTotal?callback=?",
 		dataType:   "jsonp",
 		error:      function (jqXHR, exception) {
 			// net::ERR_NAME_NOT_RESOLVED
@@ -663,7 +665,7 @@ function openInfoWindow(id, name, address, phone, type, lat, lng, weight, attend
 		//   }
 		// }
 
-	
+
 	displayLSCBoundary(id);
 	hopscotch.endTour();
 
