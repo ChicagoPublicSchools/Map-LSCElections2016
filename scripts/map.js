@@ -8,7 +8,7 @@
 
 var fusionTableId 					= "142zjKh-oFZIGF8GKTcUrivcwS4U4OzhfJUN7QAxQ" ; // LSCvacancies_2016 as of 3/22/2016
 var LSCdistrictsTableId 		= "1WRXaOoaBmKqjOOqYfd7ltc8pPHbKhMUtQ_gy6joW" ; // LSC Voting Districts SY16/17
-var googleAPIkey          	= "AIzaSyDBgH1Z_xKIjf1FVwvexUWfW-2FEhUjvF8";
+var googleAPIkey          	= "AIzaSyDPyV9JDVE0rLOHBiN4npwdhsm53GBiMuk";    // with restrictions
 var googleAPIurl          	= "https://www.googleapis.com/fusiontables/v1/query";
 var APIurl                	= "https://secure.cps.edu/json/lscvacancies2016?callback=test";
 var heatmap 								= null;
